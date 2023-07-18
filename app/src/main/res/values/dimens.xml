@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="image_corners_dimen">16dp</dimen>
+
+    <dimen name="rv_item_corners_dimen">16dp</dimen>
+
+    <dimen name="button_corners_dimen">16dp</dimen>
+    <dimen name="button_stroke_dimen">2dp</dimen>
+</resources>
