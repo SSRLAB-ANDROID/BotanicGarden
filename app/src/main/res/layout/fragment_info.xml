@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    tools:ignore="ContentDescription"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/info_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/ic_back_selector"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginVertical="16dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/info_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Кантакты"
+            android:textStyle="bold"
+            android:textSize="19sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/manrope"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/info_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:src="@drawable/ic_info_flower"
+
+        app:layout_constraintTop_toBottomOf="@id/info_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="16dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/info_instagram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/ic_instagram_selector"
+
+            android:layout_marginVertical="16dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/info_facebook"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/info_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/ic_facebook_selector"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/info_vk"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/info_instagram"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/info_vk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/ic_vk_selector"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/info_facebook"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_centre"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintTop_toBottomOf="@id/info_header"
+        app:layout_constraintBottom_toTopOf="@id/info_footer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/info_address_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Адрас:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/manrope"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+        
+        <TextView
+            android:id="@+id/info_address_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:text="220012, г. Мінск, вул. Сурганава, 2В"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/info_address_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/info_phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Тэлефоны:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/manrope"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="36dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_address_text"/>
+
+        <TextView
+            android:id="@+id/info_phone_text_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:text="+375 29 320 17 17"
+            android:textColor="@color/links_text_color_selector"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/info_phone_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/info_phone_text_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:text="+375 17 379 69 15"
+            android:textColor="@color/links_text_color_selector"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/info_phone_text_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/info_email_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Email:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/manrope"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="36dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_phone_text_2"/>
+
+        <TextView
+            android:id="@+id/info_email_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:text="office@cbg.org.by"
+            android:textColor="@color/links_text_color_selector"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/info_email_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/info_weblink_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Афіцыйны сайт:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/manrope"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="36dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_email_text"/>
+
+        <TextView
+            android:id="@+id/info_weblink_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:text="https://cbg.org.by/"
+            android:textColor="@color/links_text_color_selector"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/info_weblink_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
