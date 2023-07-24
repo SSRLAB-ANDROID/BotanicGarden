@@ -19,6 +19,10 @@ class FragmentInfo: Fragment() {
 
         binding = FragmentInfoBinding.inflate(layoutInflater)
 
+        binding.infoBack.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         return binding.root
     }
 }
