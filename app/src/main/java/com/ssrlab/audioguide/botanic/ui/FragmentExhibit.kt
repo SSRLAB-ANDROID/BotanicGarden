@@ -26,9 +26,11 @@ class FragmentExhibit: Fragment() {
         tabAdapter = TabExhibitAdapter(activity as MainActivity, arrayListOf("", "", "", ""))
         binding.exhibitPager.adapter = tabAdapter
 
-        TabLayoutMediator(binding.exhibitTabLayout, binding.exhibitPager) { tab, position ->
+        TabLayoutMediator(binding.exhibitTabLayout, binding.exhibitPager) { tab, position -> }.attach()
 
-        }.attach()
+        binding.exhibitBack.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
 
         return binding.root
     }
