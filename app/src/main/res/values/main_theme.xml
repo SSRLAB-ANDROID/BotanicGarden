@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.Botanic" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Botanic" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -19,6 +19,15 @@
 
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+
+        <item name="android:windowTranslucentNavigation">false</item>
+
+    </style>
+
+    <style name="BottomNavTheme" parent="Widget.MaterialComponents.BottomNavigationView">
+
+        <item name="fontFamily">@font/manrope</item>
+<!--        <item name="android:layout_marginBottom">16dp</item>-->
 
     </style>
 

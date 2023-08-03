@@ -1,3 +1,33 @@
 <resources>
-    <string name="app_name">Botanic garden</string>
+    <string name="app_name">Botanic Garden</string>
+
+    <!--  Bottom menu  -->
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="info">Info</string>
+
+    <!--  Start Screen  -->
+    <string name="audio_guide">Audio guide</string>
+    <string name="botanic_garden">«Botanic garden»</string>
+    <string name="start">Start</string>
+
+    <!--  Recycler View  -->
+    <string name="objects">Objects</string>
+
+    <!--  Exhibit  -->
+    <string name="build_route">Build route</string>
+    <string name="current_time_plug">00:00</string>
+    <string name="duration_plug">01:30</string>
+
+    <!--  Info  -->
+    <string name="contacts_title">Contacts</string>
+    <string name="address_title">Address:</string>
+    <string name="address">220012, Minsk, Surhanava st., 2В</string>
+    <string name="phone_numbers_title">Phone numbers:</string>
+    <string name="number_1">+375 29 320 17 17</string>
+    <string name="number_2">+375 17 379 69 15</string>
+    <string name="email_title">Email:</string>
+    <string name="email">office@cbg.org.by</string>
+    <string name="site_title">Official site:</string>
+    <string name="site">https://cbg.org.by/</string>
 </resources>

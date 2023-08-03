@@ -2,33 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    app:startDestination="@id/fragmentStart">
-
-    <fragment
-        android:id="@+id/fragmentStart"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentStart"
-        android:label="FragmentStart" >
-        <action
-            android:id="@+id/action_fragmentStart_to_fragmentList"
-            app:destination="@id/fragmentList" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragmentInfo"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentInfo"
-        android:label="FragmentInfo" />
-    <fragment
-        android:id="@+id/fragmentExhibit"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentExhibit"
-        android:label="FragmentExhibit" />
-    <fragment
-        android:id="@+id/fragmentList"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentList"
-        android:label="FragmentList" >
-        <action
-            android:id="@+id/action_fragmentList_to_fragmentExhibit"
-            app:destination="@id/fragmentExhibit" />
-        <action
-            android:id="@+id/action_fragmentList_to_fragmentInfo"
-            app:destination="@id/fragmentInfo" />
-    </fragment>
+    app:startDestination="@id/list_graph">
+    <include app:graph="@navigation/list_graph" />
+    <include app:graph="@navigation/map_graph" />
+    <include app:graph="@navigation/info_graph" />
 </navigation>

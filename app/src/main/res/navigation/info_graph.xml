@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/info_graph"
+    app:startDestination="@id/fragmentInfo">
+
+    <fragment
+        android:id="@+id/fragmentInfo"
+        android:name="com.ssrlab.audioguide.botanic.ui.FragmentInfo"
+        android:label="FragmentInfo" />
+</navigation>
