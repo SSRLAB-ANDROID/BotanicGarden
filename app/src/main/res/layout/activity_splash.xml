@@ -30,6 +30,8 @@
 
         android:src="@drawable/ic_app_logo"
 
+        android:layout_marginTop="32dp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -39,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Аўдыягід"
+        android:text="@string/audio_guide"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:fontFamily="@font/manrope"
@@ -55,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="«Батанічны сад»"
+        android:text="@string/botanic_garden"
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -68,12 +70,12 @@
         app:layout_constraintTop_toBottomOf="@id/start_guide"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/start_button"
         android:layout_width="0dp"
         android:layout_height="50dp"
 
-        android:text="Старт"
+        android:text="@string/start"
         android:textSize="20sp"
         android:textAllCaps="false"
         android:fontFamily="@font/manrope"

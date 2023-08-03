@@ -1,12 +1,10 @@
 package com.ssrlab.audioguide.botanic.rv
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
@@ -16,7 +14,6 @@ import com.ssrlab.audioguide.botanic.vm.ExhibitViewModel
 
 class ListAdapter(
     private val list: ArrayList<ExhibitObject>,
-    private val context: Context,
     private val viewModel: ExhibitViewModel,
     private val actionFromHeader: () -> Unit,
     private val actionFromItem: () -> Unit
@@ -26,8 +23,11 @@ class ListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
-            (if (viewType == 0) R.layout.rv_header
-            else R.layout.rv_exhibit),
+            (when (viewType) {
+                0 -> R.layout.rv_header
+                1 -> R.layout.rv_secondary
+                else -> R.layout.rv_exhibit
+            }),
             parent,
             false
         )
@@ -37,24 +37,29 @@ class ListAdapter(
     override fun getItemCount(): Int = list.size + 1
 
     override fun onBindViewHolder(holder: ListHolder, position: Int) {
-        if (position >= 1) {
+        if (position >= 2) {
             val itemView = holder.itemView
-            itemView.findViewById<ImageView>(R.id.rv_item_image).load(R.drawable.ic_image_plug) {
+            itemView.findViewById<ImageView>(R.id.rv_item_image).load(list[position - 2].imagePreview) {
                 crossfade(true)
                 size(100, 100)
                 transformations(RoundedCornersTransformation(10f))
             }
-            itemView.findViewById<TextView>(R.id.rv_item_title).text = position.toString()
-            itemView.setOnClickListener { actionFromItem() }
+            itemView.findViewById<TextView>(R.id.rv_item_title).text = list[position - 2].placeName
+            itemView.setOnClickListener {
+                actionFromItem()
+                viewModel.id.value = position - 2
+            }
         } else if (position == 0) {
             val itemView = holder.itemView
-            itemView.findViewById<ImageView>(R.id.rv_header_mail).setOnClickListener { actionFromHeader() }
-            itemView.findViewById<ImageView>(R.id.rv_header_language).setOnClickListener { Toast.makeText(context, "Language", Toast.LENGTH_SHORT).show() }
+            itemView.findViewById<ImageView>(R.id.rv_header_language).setOnClickListener { actionFromHeader() }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) 0
-        else 1
+        return when (position) {
+            0 -> 0
+            1 -> 1
+            else -> 2
+        }
     }
 }
