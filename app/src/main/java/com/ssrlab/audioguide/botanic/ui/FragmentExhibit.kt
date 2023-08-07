@@ -6,19 +6,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
 import com.ssrlab.audioguide.botanic.rv.tab.TabExhibitAdapter
 import com.ssrlab.audioguide.botanic.vm.ExhibitViewModel
+import com.ssrlab.audioguide.botanic.vm.PlayerViewModel
 
 class FragmentExhibit: Fragment() {
+
+    private lateinit var mainActivity: MainActivity
 
     private lateinit var binding: FragmentExhibitBinding
     private lateinit var tabAdapter: TabExhibitAdapter
 
     private val viewModel: ExhibitViewModel by activityViewModels()
+    private val playerVM: PlayerViewModel by viewModels()
+    private var isPlaying = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        mainActivity = activity as MainActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +54,7 @@ class FragmentExhibit: Fragment() {
 
         setUpIdObserver()
         setUpOrderAction()
+        setUpVolumeButton()
     }
 
     private fun setUpIdObserver() {
@@ -118,6 +131,17 @@ class FragmentExhibit: Fragment() {
     }
 
     private fun setUpVolumeButton() {
+        if (!viewModel.isVolumeOn.value!!) binding.exhibitVolumeIc.setImageResource(R.drawable.ic_volume_off_selector)
+        else binding.exhibitVolumeIc.setImageResource(R.drawable.ic_volume_on_selector)
 
+        viewModel.isVolumeOn.observe(this) {
+            if (!it) binding.exhibitVolumeIc.setImageResource(R.drawable.ic_volume_off_selector)
+            else binding.exhibitVolumeIc.setImageResource(R.drawable.ic_volume_on_selector)
+        }
+
+        binding.exhibitVolumeIc.setOnClickListener {
+            if (viewModel.isVolumeOn.value!!) mainActivity.controlVolume(0)
+            else mainActivity.controlVolume(10)
+        }
     }
 }

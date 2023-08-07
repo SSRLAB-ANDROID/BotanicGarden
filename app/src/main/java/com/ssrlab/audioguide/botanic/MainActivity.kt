@@ -1,9 +1,14 @@
 package com.ssrlab.audioguide.botanic
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -13,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssrlab.audioguide.botanic.databinding.ActivityMainBinding
 import com.ssrlab.audioguide.botanic.db.ExhibitDao
 import com.ssrlab.audioguide.botanic.db.ExhibitDatabase
+import com.ssrlab.audioguide.botanic.vm.ExhibitViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +33,19 @@ class MainActivity : AppCompatActivity() {
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
+
+    private val viewModel: ExhibitViewModel by viewModels()
+
+    private lateinit var audioManager: AudioManager
+    private val volumeChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == "android.media.VOLUME_CHANGED_ACTION") {
+
+                val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+                viewModel.isVolumeOn.value = currentVolume != 0
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +64,23 @@ class MainActivity : AppCompatActivity() {
         bottomNav = binding.mainBottomNav
         bottomNav.setupWithNavController(navController)
 
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        viewModel.isVolumeOn.value = currentVolume != 0
+
         setTransparentStatusBar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        registerReceiver(volumeChangeReceiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        unregisterReceiver(volumeChangeReceiver)
     }
 
     private fun setTransparentStatusBar() {
@@ -54,6 +89,11 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
+    }
+
+    fun controlVolume(value: Int) {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value, 0)
     }
 
     fun intentToDialer(phoneNumber: String) {

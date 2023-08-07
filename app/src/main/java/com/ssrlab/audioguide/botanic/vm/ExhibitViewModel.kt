@@ -20,9 +20,5 @@ class ExhibitViewModel: ViewModel() {
     fun getList() = list
 
     //Volume
-    private var isVolumeOn = true
-    fun getVolumeValue() = isVolumeOn
-    fun setVolumeValue(value: Boolean) {
-        isVolumeOn = value
-    }
+    var isVolumeOn = MutableLiveData<Boolean>()
 }
