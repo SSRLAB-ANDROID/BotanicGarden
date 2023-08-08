@@ -9,7 +9,7 @@ class HelpFunctions {
         val seconds = duration % (1000 * 60 * 60) % (1000 * 60) / 1000
 
         var finalString = ""
-        finalString += "$minute:"
+        finalString += "0$minute:"
         if (seconds < 10) finalString += "0"
         finalString += "$seconds"
 

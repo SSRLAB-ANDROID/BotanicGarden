@@ -13,7 +13,7 @@ object ExhibitClient {
 
     private var client: OkHttpClient? = null
 
-    fun getExhibits(scope: CoroutineScope, dbDao: ExhibitDao, onFailure: (String) -> Unit) {
+    fun getExhibits(scope: CoroutineScope, dbDao: ExhibitDao, onSuccess: () -> Unit, onFailure: () -> Unit) {
 
         if (client == null) client = OkHttpClient.Builder().build()
 
@@ -23,7 +23,8 @@ object ExhibitClient {
 
         client!!.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                e.message?.let { onFailure(it) }
+                e.printStackTrace()
+                onFailure()
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -47,10 +48,12 @@ object ExhibitClient {
                         )
 
                         scope.launch {
-                            if (dbDao.getAllExhibits() == listOf<ExhibitObject>()) dbDao.insert(exhibitObject)
+                            dbDao.insert(exhibitObject)
                         }
                     }
                 }
+
+                onSuccess()
             }
         })
     }

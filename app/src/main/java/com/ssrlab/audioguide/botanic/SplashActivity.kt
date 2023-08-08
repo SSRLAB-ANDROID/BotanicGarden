@@ -3,6 +3,7 @@ package com.ssrlab.audioguide.botanic
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,12 +36,23 @@ class SplashActivity : AppCompatActivity() {
             .build()
         exhibitDao = db.exhibitDao()
 
-        ExhibitClient.getExhibits(scope, exhibitDao) {
-            runOnUiThread { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
-        }
-
-        binding.startButton.setOnClickListener {
-            navigateToMainActivity()
+        ExhibitClient.getExhibits(scope, exhibitDao, {
+            runOnUiThread {
+                binding.apply{
+                    startButton.setOnClickListener { navigateToMainActivity() }
+                    startProgress.visibility = View.GONE
+                    startButton.visibility = View.VISIBLE
+                }
+            } })
+        {
+            runOnUiThread {
+                Toast.makeText(this@SplashActivity, resources.getText(R.string.cant_update), Toast.LENGTH_SHORT).show()
+                binding.apply{
+                    startButton.setOnClickListener { navigateToMainActivity() }
+                    startProgress.visibility = View.GONE
+                    startButton.visibility = View.VISIBLE
+                }
+            }
         }
 
         setTransparentStatusBar()
