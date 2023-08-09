@@ -1,9 +1,12 @@
 package com.ssrlab.audioguide.botanic.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,12 +27,14 @@ class FragmentExhibit: Fragment() {
 
     private val viewModel: ExhibitViewModel by activityViewModels()
     private val playerVM: PlayerViewModel by viewModels()
-    private var isPlaying = false
+
+    private lateinit var window: PopupWindow
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainActivity = activity as MainActivity
+        window = PopupWindow(mainActivity)
     }
 
     override fun onCreateView(
@@ -55,6 +60,11 @@ class FragmentExhibit: Fragment() {
         setUpIdObserver()
         setUpOrderAction()
         setUpVolumeButton()
+        setUpSpeedList()
+
+        binding.exhibitPlayIc.setOnClickListener {
+            playerVM.playAudio(mainActivity, binding, mainActivity)
+        }
     }
 
     private fun setUpIdObserver() {
@@ -114,11 +124,16 @@ class FragmentExhibit: Fragment() {
             setChosenItem(getList()[id.value!!])
         }
 
+        if (window.isShowing) window.dismiss()
+
         val imagesArray = arrayListOf<String>()
         for (i in viewModel.getExhibitObject().images.keys) viewModel.getExhibitObject().images[i]
             ?.let { imagesArray.add(it) }
 
         tabAdapter = TabExhibitAdapter(activity as MainActivity, imagesArray)
+
+        playerVM.mpStop()
+        playerVM.initializeMediaPlayer(viewModel.getExhibitObject().audio, binding)
 
         binding.apply {
             exhibitPager.adapter = tabAdapter
@@ -142,6 +157,39 @@ class FragmentExhibit: Fragment() {
         binding.exhibitVolumeIc.setOnClickListener {
             if (viewModel.isVolumeOn.value!!) mainActivity.controlVolume(0)
             else mainActivity.controlVolume(10)
+        }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun setUpSpeedList() {
+        binding.exhibitSpeedIc.setOnClickListener {
+
+            if (window.isShowing) window.dismiss()
+            else {
+                val view = layoutInflater.inflate(R.layout.layout_popup, null)
+
+                window.contentView = view
+                val speed05 = view.findViewById<TextView>(R.id.speed_0_5)
+                val speed075 = view.findViewById<TextView>(R.id.speed_0_75)
+                val speed10 = view.findViewById<TextView>(R.id.speed_1_0)
+                val speed125 = view.findViewById<TextView>(R.id.speed_1_25)
+                val speed15 = view.findViewById<TextView>(R.id.speed_1_5)
+
+                setSpeedAction(speed05, 0.5f)
+                setSpeedAction(speed075, 0.75f)
+                setSpeedAction(speed10, 1f)
+                setSpeedAction(speed125, 1.25f)
+                setSpeedAction(speed15, 1.5f)
+
+                window.showAsDropDown(binding.exhibitSpeedIc)
+            }
+        }
+    }
+
+    private fun setSpeedAction(view: View, speed: Float) {
+        view.setOnClickListener {
+            playerVM.changeAudioSpeed(speed)
+            window.dismiss()
         }
     }
 }

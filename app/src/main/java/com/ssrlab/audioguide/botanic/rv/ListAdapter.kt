@@ -34,7 +34,7 @@ class ListAdapter(
         return ListHolder(itemView)
     }
 
-    override fun getItemCount(): Int = list.size + 1
+    override fun getItemCount(): Int = list.size + 2
 
     override fun onBindViewHolder(holder: ListHolder, position: Int) {
         if (position >= 2) {

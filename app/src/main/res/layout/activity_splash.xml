@@ -86,6 +86,7 @@
         android:stateListAnimator="@animator/button_state_list_animator"
 
         android:gravity="center"
+        android:visibility="gone"
 
         android:layout_marginHorizontal="16dp"
 
@@ -93,5 +94,15 @@
         app:layout_constraintStart_toStartOf="@id/start_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/start_name"/>
+
+    <ProgressBar
+        android:id="@+id/start_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/start_button"
+        app:layout_constraintBottom_toBottomOf="@id/start_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
