@@ -267,7 +267,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:background="@drawable/background_route_button"
+                android:background="@drawable/background_green_button"
 
                 android:clickable="true"
                 android:focusable="true"
