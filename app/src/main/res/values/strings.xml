@@ -36,4 +36,7 @@
     <string name="email">office@cbg.org.by</string>
     <string name="site_title">Official site:</string>
     <string name="site">https://cbg.org.by/</string>
+
+    <!--  Map  -->
+    <string name="mapbox_access_token">pk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNDlzcjFiMDRiNDNwczdncm94YnN6OCJ9.kpltoznp8B0lXFM4vGEz0w</string>
 </resources>
