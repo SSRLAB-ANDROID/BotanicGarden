@@ -17,6 +17,10 @@ import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
 import com.ssrlab.audioguide.botanic.rv.tab.TabExhibitAdapter
 import com.ssrlab.audioguide.botanic.vm.ExhibitViewModel
 import com.ssrlab.audioguide.botanic.vm.PlayerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class FragmentExhibit: Fragment() {
 
@@ -27,6 +31,7 @@ class FragmentExhibit: Fragment() {
 
     private val viewModel: ExhibitViewModel by activityViewModels()
     private val playerVM: PlayerViewModel by viewModels()
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var window: PopupWindow
 
@@ -48,7 +53,10 @@ class FragmentExhibit: Fragment() {
         updateExhibit()
 
         binding.exhibitBack.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            scope.launch {
+                delay(500)
+                mainActivity.onBackPressedDispatcher.onBackPressed()
+            }
         }
 
         return binding.root
@@ -64,6 +72,15 @@ class FragmentExhibit: Fragment() {
 
         binding.exhibitPlayIc.setOnClickListener {
             playerVM.playAudio(mainActivity, binding, mainActivity)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        scope.launch {
+            delay(500)
+            playerVM.mpStop()
         }
     }
 
@@ -130,7 +147,7 @@ class FragmentExhibit: Fragment() {
         for (i in viewModel.getExhibitObject().images.keys) viewModel.getExhibitObject().images[i]
             ?.let { imagesArray.add(it) }
 
-        tabAdapter = TabExhibitAdapter(activity as MainActivity, imagesArray)
+        tabAdapter = TabExhibitAdapter(activity as MainActivity, imagesArray, viewModel)
 
         playerVM.mpStop()
         playerVM.initializeMediaPlayer(viewModel.getExhibitObject().audio, binding)

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Botanic Garden</string>
+    <string name="app_name">Botanical Garden</string>
 
     <!--  Bottom menu  -->
     <string name="home">Home</string>
@@ -8,7 +8,7 @@
 
     <!--  Start Screen  -->
     <string name="audio_guide">Audio guide</string>
-    <string name="botanic_garden">«Botanic garden»</string>
+    <string name="botanic_garden">«Botanical garden»</string>
     <string name="start">Start</string>
 
     <!--  Recycler View  -->
@@ -16,7 +16,7 @@
     <string name="cant_update">Can\'t update data, seems there is a problem with internet</string>
 
     <!--  Exhibit  -->
-    <string name="build_route">Build route</string>
+    <string name="show_on_the_map">Show on the map</string>
     <string name="current_time_plug">00:00</string>
     <string name="duration_plug">01:30</string>
     <string name="_0_5">0,5</string>
@@ -38,5 +38,11 @@
     <string name="site">https://cbg.org.by/</string>
 
     <!--  Map  -->
+    <string name="build_route">Build route</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNDlzcjFiMDRiNDNwczdncm94YnN6OCJ9.kpltoznp8B0lXFM4vGEz0w</string>
+
+    <!--  Language  -->
+    <string name="be">BE</string>
+    <string name="ru">RU</string>
+    <string name="en">EN</string>
 </resources>

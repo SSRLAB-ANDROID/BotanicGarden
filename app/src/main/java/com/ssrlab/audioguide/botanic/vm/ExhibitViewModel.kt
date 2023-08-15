@@ -21,4 +21,9 @@ class ExhibitViewModel: ViewModel() {
 
     //Volume
     var isVolumeOn = MutableLiveData<Boolean>()
+
+    //Tab Link
+    private var tabLink = ""
+    fun setTabLink(link: String) { tabLink = link }
+    fun getTabLink() = tabLink
 }
