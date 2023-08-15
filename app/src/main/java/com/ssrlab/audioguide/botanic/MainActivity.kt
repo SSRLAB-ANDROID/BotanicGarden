@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
+        addGraphListener(navController)
+
         bottomNav = binding.mainBottomNav
         bottomNav.setupWithNavController(navController)
 
@@ -89,6 +92,13 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
+    }
+
+    private fun addGraphListener(navController: NavController) {
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            if (destination.id == R.id.fragmentMap) binding.mainBottomNav.visibility = View.GONE
+            else binding.mainBottomNav.visibility = View.VISIBLE
+        }
     }
 
     fun controlVolume(value: Int) {
