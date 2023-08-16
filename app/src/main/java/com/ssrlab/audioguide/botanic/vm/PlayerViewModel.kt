@@ -75,7 +75,6 @@ class PlayerViewModel: ViewModel() {
                         mediaScope.launch { initProgressListener(mediaPlayer!!, binding, activity) }
                         mpStatus = "pause"
                         binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector)
-
                     } catch (e: Exception){
                         Toast.makeText(context, "Player error: ${e.message.toString()}", Toast.LENGTH_SHORT).show()
                     }
@@ -94,10 +93,13 @@ class PlayerViewModel: ViewModel() {
     fun mpStop() {
         mpStatus = "stop"
 
-        if (mediaPlayer?.isPlaying == true) {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-        } else mediaPlayer?.release()
+        if (mediaPlayer != null) {
+            if (mediaPlayer?.isPlaying == true) {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.release()
+                mediaPlayer = null
+            } else mediaPlayer?.release()
+        }
     }
 
     private suspend fun initProgressListener(mediaPlayer: MediaPlayer?, binding: FragmentExhibitBinding, activity: MainActivity) {

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -24,9 +24,9 @@ class FragmentList: Fragment() {
 
     private lateinit var binding: FragmentListBinding
     private lateinit var adapter: ListAdapter
+    private lateinit var window: PopupWindow
 
     private lateinit var navController: NavController
-    private lateinit var actionFromHeader: () -> Unit
     private lateinit var actionFromItem: () -> Unit
     private var list = arrayListOf<ExhibitObject>()
 
@@ -36,6 +36,7 @@ class FragmentList: Fragment() {
         super.onCreate(savedInstanceState)
 
         mainActivity = activity as MainActivity
+        window = PopupWindow(mainActivity)
     }
 
     override fun onCreateView(
@@ -53,7 +54,6 @@ class FragmentList: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         navController = view.findNavController()
-        actionFromHeader = { Toast.makeText(mainActivity, "Language", Toast.LENGTH_SHORT).show() }
         actionFromItem = { navController.navigate(R.id.action_fragmentList_to_fragmentExhibit) }
     }
 
@@ -63,10 +63,12 @@ class FragmentList: Fragment() {
         mainActivity.apply {
             getScope().launch {
                 list = getDao().getAllExhibits() as ArrayList<ExhibitObject>
-                viewModel.setList(list)
+                val listByLanguage = arrayListOf<ExhibitObject>()
+                for (i in list) if (i.language == mainActivity.getApp().getLocaleInt()) listByLanguage.add(i)
+                viewModel.setList(listByLanguage)
 
                 runOnUiThread {
-                    adapter = ListAdapter(list, viewModel, actionFromHeader, actionFromItem)
+                    adapter = ListAdapter(listByLanguage, viewModel, actionFromItem, mainActivity, this@FragmentList.window)
                     binding.rvList.apply {
                         layoutManager = LinearLayoutManager(requireContext())
                         adapter = this@FragmentList.adapter

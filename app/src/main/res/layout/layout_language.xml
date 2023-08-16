@@ -9,13 +9,13 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/speed_0_5"
+        android:id="@+id/lang_be"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
         android:background="@drawable/background_popup_text"
 
-        android:text="@string/_0_5"
+        android:text="@string/be"
         android:textSize="16sp"
         android:textColor="@color/popup_text_color_selector"
         android:fontFamily="@font/manrope"
@@ -32,13 +32,13 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/speed_0_75"
+        android:id="@+id/lang_ru"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:background="@drawable/background_popup_text"
 
-        android:text="@string/_0_75"
+        android:text="@string/ru"
         android:textSize="16sp"
         android:textColor="@color/popup_text_color_selector"
         android:fontFamily="@font/manrope"
@@ -51,16 +51,16 @@
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed_0_5"/>
+        app:layout_constraintTop_toBottomOf="@id/lang_be"/>
 
     <TextView
-        android:id="@+id/speed_1_0"
+        android:id="@+id/lang_en"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
         android:background="@drawable/background_popup_text"
 
-        android:text="@string/_1_0"
+        android:text="@string/en"
         android:textSize="16sp"
         android:textColor="@color/popup_text_color_selector"
         android:fontFamily="@font/manrope"
@@ -74,53 +74,6 @@
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed_0_75"/>
-
-    <TextView
-        android:id="@+id/speed_1_25"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:background="@drawable/background_popup_text"
-
-        android:text="@string/_1_25"
-        android:textSize="16sp"
-        android:textColor="@color/popup_text_color_selector"
-        android:fontFamily="@font/manrope"
-
-        android:clickable="true"
-        android:focusable="true"
-
-        android:gravity="center"
-
-        android:paddingVertical="8dp"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed_1_0"/>
-
-    <TextView
-        android:id="@+id/speed_1_5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:background="@drawable/background_popup_text"
-
-        android:text="@string/_1_5"
-        android:textSize="16sp"
-        android:textColor="@color/popup_text_color_selector"
-        android:fontFamily="@font/manrope"
-
-        android:clickable="true"
-        android:focusable="true"
-
-        android:gravity="center"
-
-        android:paddingVertical="8dp"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed_1_25"/>
+        app:layout_constraintTop_toBottomOf="@id/lang_ru"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

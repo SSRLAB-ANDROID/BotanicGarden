@@ -41,7 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="@string/audio_guide"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:fontFamily="@font/manrope"
@@ -57,7 +56,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="@string/botanic_garden"
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -75,7 +73,6 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
 
-        android:text="@string/start"
         android:textSize="20sp"
         android:textAllCaps="false"
         android:fontFamily="@font/manrope"

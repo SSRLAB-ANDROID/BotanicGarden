@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">Ботанический сад</string>
+
+    <!--  Bottom menu  -->
+    <string name="home">Главная</string>
+    <string name="map">Карта</string>
+    <string name="info">Контакты</string>
+
+    <!--  Start Screen  -->
+    <string name="audio_guide">Аудиогид</string>
+    <string name="botanic_garden">«Ботанический сад»</string>
+    <string name="start">Старт</string>
+
+    <!--  Recycler View  -->
+    <string name="objects">Объекты</string>
+    <string name="cant_update">Невозможно обновить данные, какие-то проблемы с интернет-соединением</string>
+
+    <!--  Exhibit  -->
+    <string name="show_on_the_map">Посмотреть на карте</string>
+    <string name="current_time_plug">00:00</string>
+    <string name="duration_plug">01:30</string>
+    <string name="_0_5">0,5</string>
+    <string name="_0_75">0,75</string>
+    <string name="_1_0">1,0</string>
+    <string name="_1_25">1,25</string>
+    <string name="_1_5">1,5</string>
+
+    <!--  Info  -->
+    <string name="contacts_title">Контакты</string>
+    <string name="address_title">Адрес:</string>
+    <string name="address">220012, г.Минск, ул.Сурганова, 2В</string>
+    <string name="phone_numbers_title">Телефоны:</string>
+    <string name="number_1">+375 29 320 17 17</string>
+    <string name="number_2">+375 17 379 69 15</string>
+    <string name="email_title">Email:</string>
+    <string name="email">office@cbg.org.by</string>
+    <string name="site_title">Официальный сайт:</string>
+    <string name="site">https://cbg.org.by/</string>
+
+    <!--  Map  -->
+    <string name="build_route">Построить маршрут</string>
+    <string name="mapbox_access_token">pk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNDlzcjFiMDRiNDNwczdncm94YnN6OCJ9.kpltoznp8B0lXFM4vGEz0w</string>
+
+    <!--  Language  -->
+    <string name="be">BE</string>
+    <string name="ru">RU</string>
+    <string name="en">EN</string>
+</resources>

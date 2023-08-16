@@ -294,7 +294,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:src="@drawable/ic_route"
+                        android:src="@drawable/ic_show_on_the_map"
 
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -307,7 +307,7 @@
                         android:layout_height="wrap_content"
 
                         android:fontFamily="@font/manrope"
-                        android:text="@string/build_route"
+                        android:text="@string/show_on_the_map"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"
