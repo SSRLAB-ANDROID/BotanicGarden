@@ -64,7 +64,25 @@ class FragmentList: Fragment() {
             getScope().launch {
                 list = getDao().getAllExhibits() as ArrayList<ExhibitObject>
                 val listByLanguage = arrayListOf<ExhibitObject>()
-                for (i in list) if (i.language == mainActivity.getApp().getLocaleInt()) listByLanguage.add(i)
+
+                var index = 1
+                for (i in list) if (i.language == mainActivity.getApp().getLocaleInt()) {
+                    val newObject = ExhibitObject(
+                        primaryId = i.primaryId,
+                        placeId = i.placeId,
+                        imagePreview = i.imagePreview,
+                        qr = i.qr,
+                        placeName = "$index. ${i.placeName}",
+                        audioText = i.audioText,
+                        audio = i.audio,
+                        language = i.language,
+                        lat = i.lat,
+                        lng = i.lng,
+                        images = i.images
+                    )
+                    listByLanguage.add(newObject)
+                    index++
+                }
                 viewModel.setList(listByLanguage)
 
                 runOnUiThread {

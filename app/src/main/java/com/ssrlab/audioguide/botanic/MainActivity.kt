@@ -61,25 +61,16 @@ class MainActivity : AppCompatActivity() {
         mainApp.setContext(this@MainActivity)
 
         loadPreferences()
-
-        val db = Room.databaseBuilder(applicationContext, ExhibitDatabase::class.java, "exhibit_table")
-            .fallbackToDestructiveMigration()
-            .build()
-        exhibitDao = db.exhibitDao()
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
+        setUpElements()
         addGraphListener(navController)
 
         bottomNav = binding.mainBottomNav
-        bottomNav.inflateMenu(R.menu.bottom_menu)
-        bottomNav.setupWithNavController(navController)
+        bottomNav.apply {
+            inflateMenu(R.menu.bottom_menu)
+            setupWithNavController(navController)
+        }
 
-        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-        viewModel.isVolumeOn.value = currentVolume != 0
-
+        setUpVolumeStateListener()
         setTransparentStatusBar()
     }
 
@@ -93,6 +84,22 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         unregisterReceiver(volumeChangeReceiver)
+    }
+
+    private fun setUpElements() {
+        val db = Room.databaseBuilder(applicationContext, ExhibitDatabase::class.java, "exhibit_table")
+            .fallbackToDestructiveMigration()
+            .build()
+        exhibitDao = db.exhibitDao()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+    }
+
+    private fun setUpVolumeStateListener() {
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        viewModel.isVolumeOn.value = currentVolume != 0
     }
 
     @Suppress("DEPRECATION")
