@@ -86,5 +86,6 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'com.mapbox.maps:android:10.15.0'
+    implementation "com.mapbox.navigation:android:2.14.2"
     implementation("com.google.android.gms:play-services-location:21.0.1")
 }

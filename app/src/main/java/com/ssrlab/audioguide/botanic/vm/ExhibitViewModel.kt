@@ -26,4 +26,9 @@ class ExhibitViewModel: ViewModel() {
     private var tabLink = ""
     fun setTabLink(link: String) { tabLink = link }
     fun getTabLink() = tabLink
+
+    //MapHelper
+    private var point = -1
+    fun setPoint(point: Int) { this.point = point }
+    fun getPoint() = point
 }

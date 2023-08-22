@@ -18,8 +18,6 @@
         mapbox:mapbox_cameraTargetLng="27.612936753968526"
         mapbox:mapbox_cameraZoom="14.5"
 
-        android:layout_marginTop="40dp"
-
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent"
@@ -35,7 +33,7 @@
 
         android:padding="4dp"
 
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         android:layout_marginStart="16dp"
 
         app:layout_constraintStart_toStartOf="parent"
