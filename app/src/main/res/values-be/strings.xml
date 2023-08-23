@@ -40,6 +40,7 @@
     <!--  Map  -->
     <string name="build_route">Пабудаваць маршрут</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNDlzcjFiMDRiNDNwczdncm94YnN6OCJ9.kpltoznp8B0lXFM4vGEz0w</string>
+    <string name="something_went_wrong">Нешта пайшло ня так</string>
 
     <!--  Language  -->
     <string name="be">BE</string>

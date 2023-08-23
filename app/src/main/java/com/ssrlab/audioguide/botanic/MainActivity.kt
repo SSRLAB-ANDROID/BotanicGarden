@@ -16,6 +16,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mapbox.navigation.base.options.NavigationOptions
+import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp
 import com.ssrlab.audioguide.botanic.app.MainApplication
 import com.ssrlab.audioguide.botanic.databinding.ActivityMainBinding
 import com.ssrlab.audioguide.botanic.db.ExhibitDao
@@ -70,6 +72,14 @@ class MainActivity : AppCompatActivity() {
             setupWithNavController(navController)
         }
 
+        if (!MapboxNavigationApp.isSetup()) {
+            MapboxNavigationApp.setup {
+                NavigationOptions.Builder(this@MainActivity)
+                    .accessToken(resources.getString(R.string.mapbox_access_token))
+                    .build()
+            }
+        }
+
         setUpVolumeStateListener()
         setTransparentStatusBar()
     }
@@ -77,12 +87,14 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        MapboxNavigationApp.attach(this)
         registerReceiver(volumeChangeReceiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
     }
 
     override fun onPause() {
         super.onPause()
 
+        MapboxNavigationApp.detach(this)
         unregisterReceiver(volumeChangeReceiver)
     }
 
@@ -165,6 +177,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun getNavController() = navController
     fun getApp() = mainApp
     fun getScope() = scope
     fun getDao() = exhibitDao

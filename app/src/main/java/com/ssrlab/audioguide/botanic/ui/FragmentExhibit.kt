@@ -70,6 +70,11 @@ class FragmentExhibit: Fragment() {
         setUpVolumeButton()
         setUpSpeedList()
 
+        binding.exhibitButtonShow.setOnClickListener {
+            viewModel.setPoint(1)
+            mainActivity.getNavController().navigate(R.id.map_graph)
+        }
+
         binding.exhibitPlayIc.setOnClickListener {
             playerVM.playAudio(mainActivity, binding, mainActivity)
         }
@@ -88,18 +93,26 @@ class FragmentExhibit: Fragment() {
         viewModel.id.observe(this) {
             when (it) {
                 0 -> {
-                    binding.exhibitPreviousIc.apply {
-                        setImageResource(R.drawable.ic_previous_disabled)
-                        isClickable = false
-                        isFocusable = false
+                    binding.apply {
+                        exhibitNextIc.setImageResource(R.drawable.ic_next_selector)
+                        exhibitNextIc.isClickable = true
+                        exhibitNextIc.isFocusable = true
+
+                        exhibitPreviousIc.setImageResource(R.drawable.ic_previous_disabled)
+                        exhibitPreviousIc.isClickable = false
+                        exhibitPreviousIc.isFocusable = false
                     }
                 }
 
                 viewModel.getList().size - 1 -> {
-                    binding.exhibitNextIc.apply {
-                        setImageResource(R.drawable.ic_next_disabled)
-                        isClickable = false
-                        isFocusable = false
+                    binding.apply {
+                        exhibitPreviousIc.setImageResource(R.drawable.ic_previous_selector)
+                        exhibitPreviousIc.isClickable = true
+                        exhibitPreviousIc.isFocusable = true
+
+                        exhibitNextIc.setImageResource(R.drawable.ic_next_disabled)
+                        exhibitNextIc.isClickable = false
+                        exhibitNextIc.isFocusable = false
                     }
                 }
 

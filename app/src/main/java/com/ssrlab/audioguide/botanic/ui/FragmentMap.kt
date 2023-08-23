@@ -1,6 +1,7 @@
 package com.ssrlab.audioguide.botanic.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,9 +24,20 @@ import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants
 import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.maps.plugin.scalebar.scalebar
 import com.mapbox.maps.viewannotation.ViewAnnotationManager
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.directions.session.RoutesObserver
+import com.mapbox.navigation.core.lifecycle.MapboxNavigationObserver
+import com.mapbox.navigation.core.lifecycle.requireMapboxNavigation
+import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi
+import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView
+import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions
+import com.mapbox.navigation.ui.maps.route.line.model.RouteLineColorResources
+import com.mapbox.navigation.ui.maps.route.line.model.RouteLineResources
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentMapBinding
@@ -43,12 +55,32 @@ class FragmentMap: Fragment() {
     private lateinit var binding: FragmentMapBinding
     private lateinit var mainActivity: MainActivity
 
+    private val annotationArray = arrayListOf<View>()
+
     private var permissionConstant = false
     private val pointActivatedArray = arrayListOf<Boolean>()
     private var mapView: MapView? = null
     private lateinit var mapboxMap: MapboxMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewAnnotationManager: ViewAnnotationManager
+
+    private lateinit var routeLineResources: RouteLineResources
+    private lateinit var options: MapboxRouteLineOptions
+    private lateinit var routeLineApi: MapboxRouteLineApi
+    private lateinit var routesObserver: RoutesObserver
+
+    private val mapboxNavigation: MapboxNavigation by requireMapboxNavigation(
+        onResumedObserver = object : MapboxNavigationObserver {
+            @SuppressLint("MissingPermission")
+            override fun onAttached(mapboxNavigation: MapboxNavigation) {
+                mapboxNavigation.registerRoutesObserver(routesObserver)
+            }
+
+            override fun onDetached(mapboxNavigation: MapboxNavigation) {
+                mapboxNavigation.unregisterRoutesObserver(routesObserver)
+            }
+        }
+    )
 
     private val exhibitViewModel: ExhibitViewModel by activityViewModels()
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -70,6 +102,7 @@ class FragmentMap: Fragment() {
         mapView = binding.map
         viewAnnotationManager = binding.map.viewAnnotationManager
         mapboxMap = binding.map.getMapboxMap()
+        mapView?.scalebar?.enabled = false
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS).apply {
             for (i in exhibitViewModel.getList()) {
                 val point = Point.fromLngLat(i.lng, i.lat)
@@ -77,6 +110,45 @@ class FragmentMap: Fragment() {
                 val pointNumber = parts.firstOrNull()!!.trim()
                 addPoint(point, i, pointNumber)
                 pointActivatedArray.add(false)
+            }
+        }
+
+        routeLineResources = RouteLineResources.Builder()
+            .routeLineColorResources(RouteLineColorResources.Builder()
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .build())
+            .build()
+
+        options = MapboxRouteLineOptions.Builder(mainActivity)
+            .withVanishingRouteLineEnabled(true)
+            .withRouteLineResources(routeLineResources)
+            .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER)
+            .build()
+
+        routeLineApi = MapboxRouteLineApi(options)
+
+        routesObserver = RoutesObserver {
+            routeLineApi.setNavigationRoutes(it.navigationRoutes) { value ->
+                mapboxMap.getStyle()?.apply {
+                    MapboxRouteLineView(options).renderRouteDrawData(this, value)
+                }
             }
         }
 
@@ -90,6 +162,34 @@ class FragmentMap: Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (exhibitViewModel.getPoint() != -1) {
+
+            val exhibitObject = exhibitViewModel.getExhibitObject()
+            val point = Point.fromLngLat(exhibitObject.lng, exhibitObject.lat)
+
+            val cameraSettings = cameraOptions {
+                center(point)
+            }
+            mapView?.camera?.flyTo(cameraSettings)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        exhibitViewModel.setPoint(-1)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mapboxNavigation.stopTripSession()
+        mapboxNavigation.setNavigationRoutes(listOf())
     }
 
     private fun setLocationAction() {
@@ -155,6 +255,7 @@ class FragmentMap: Fragment() {
         )
     }
 
+    @SuppressLint("MissingPermission")
     private fun addPoint(point: Point, pointObject: ExhibitObject, pointNumber: String) {
         val viewAnnotation = viewAnnotationManager.addViewAnnotation(
             resId = R.layout.view_map,
@@ -162,16 +263,27 @@ class FragmentMap: Fragment() {
                 geometry(point)
             }
         )
+        annotationArray.add(viewAnnotation)
+
         viewAnnotation.findViewById<TextView>(R.id.view_map_text).text = pointNumber
         viewAnnotation.setOnClickListener {
             val cameraSettings = cameraOptions {
                 center(point)
             }
             mapView?.camera?.flyTo(cameraSettings)
-            DialogMap(pointObject, viewAnnotation).show(parentFragmentManager, pointObject.placeName)
 
-            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
-            viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            var currentPoint = Point.fromLngLat(0.0, 0.0)
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+
+                DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation).show(parentFragmentManager, pointObject.placeName)
+
+                viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
+                viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            }
+
+
         }
         ViewMapBinding.bind(viewAnnotation)
     }
