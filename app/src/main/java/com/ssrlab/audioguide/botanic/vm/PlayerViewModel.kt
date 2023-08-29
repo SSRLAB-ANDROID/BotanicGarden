@@ -3,6 +3,7 @@ package com.ssrlab.audioguide.botanic.vm
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.ssrlab.audioguide.botanic.MainActivity
@@ -25,33 +26,46 @@ class PlayerViewModel: ViewModel() {
 
     fun initializeMediaPlayer(uri: String, binding: FragmentExhibitBinding) {
 
-        mpStatus = "play"
-
-        mediaPlayer = MediaPlayer()
-        try {
-
-            mediaPlayer!!.setDataSource(uri)
-            if (speed != null) {
-                val playBackParams = PlaybackParams()
-                playBackParams.speed = speed!!
-                mediaPlayer!!.playbackParams = playBackParams
-            }
-            mediaPlayer!!.prepare()
-
-            this.binding = binding
+        if (uri != "null") {
 
             binding.apply {
-                exhibitDurationBar.max = mediaPlayer!!.duration
-                exhibitDurationBar.progress = 0
-                exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
-                exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                exhibitPlayIc.visibility = View.VISIBLE
+                exhibitVolumeIc.visibility = View.VISIBLE
+                exhibitSpeedIc.visibility = View.VISIBLE
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
 
-        listenProgress(mediaPlayer!!)
+            mpStatus = "play"
+
+            mediaPlayer = MediaPlayer()
+            try {
+
+                mediaPlayer!!.setDataSource(uri)
+                if (speed != null) {
+                    val playBackParams = PlaybackParams()
+                    playBackParams.speed = speed!!
+                    mediaPlayer!!.playbackParams = playBackParams
+                }
+                mediaPlayer!!.prepare()
+
+                this.binding = binding
+
+                binding.apply {
+                    exhibitDurationBar.max = mediaPlayer!!.duration
+                    exhibitDurationBar.progress = 0
+                    exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
+                    exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                    exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            listenProgress(mediaPlayer!!)
+        } else binding.apply {
+            exhibitPlayIc.visibility = View.INVISIBLE
+            exhibitVolumeIc.visibility = View.INVISIBLE
+            exhibitSpeedIc.visibility = View.INVISIBLE
+        }
     }
 
     fun playAudio(context: Context, binding: FragmentExhibitBinding, activity: MainActivity) {
