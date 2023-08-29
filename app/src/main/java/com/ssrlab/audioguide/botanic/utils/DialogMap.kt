@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.geojson.Point
 import com.mapbox.navigation.base.extensions.applyDefaultNavigationOptions
@@ -61,6 +62,7 @@ class DialogMap(
                     RouteOptions
                         .builder()
                         .applyDefaultNavigationOptions()
+                        .profile(DirectionsCriteria.PROFILE_WALKING)
                         .coordinatesList(listOf(userCoordinates, Point.fromLngLat(point.lng, point.lat)))
                         .build(),
 

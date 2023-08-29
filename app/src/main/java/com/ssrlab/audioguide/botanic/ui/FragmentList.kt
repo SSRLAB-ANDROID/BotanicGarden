@@ -72,7 +72,7 @@ class FragmentList: Fragment() {
                         placeId = i.placeId,
                         imagePreview = i.imagePreview,
                         qr = i.qr,
-                        placeName = "$index. ${i.placeName}",
+                        placeName = "${i.placeId}. ${i.placeName}",
                         audioText = i.audioText,
                         audio = i.audio,
                         language = i.language,

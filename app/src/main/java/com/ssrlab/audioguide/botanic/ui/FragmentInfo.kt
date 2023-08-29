@@ -42,6 +42,9 @@ class FragmentInfo: Fragment() {
             infoPhoneText2.setOnClickListener { mainActivity.intentToDialer("+375173796915") }
             infoEmailText.setOnClickListener { mainActivity.intentToMail("office@cbg.org.by") }
             infoWeblinkText.setOnClickListener { mainActivity.intentToBrowser("https://cbg.org.by/") }
+            infoInstagram.setOnClickListener { mainActivity.intentToBrowser("https://www.instagram.com/botanicalgardenminsk") }
+            infoFacebook.setOnClickListener { mainActivity.intentToBrowser("https://www.facebook.com/BotanicalGardenMinsk") }
+            infoVk.setOnClickListener { mainActivity.intentToBrowser("https://vk.com/botanicalgardenminsk") }
         }
     }
 }
