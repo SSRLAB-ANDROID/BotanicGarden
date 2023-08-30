@@ -84,7 +84,7 @@ class FragmentExhibit: Fragment() {
         super.onStop()
 
         scope.launch {
-            delay(500)
+            delay(10)
             playerVM.mpStop()
         }
     }
@@ -162,8 +162,8 @@ class FragmentExhibit: Fragment() {
 
         tabAdapter = TabExhibitAdapter(activity as MainActivity, imagesArray, viewModel)
 
-        playerVM.mpStop()
-        playerVM.initializeMediaPlayer(viewModel.getExhibitObject().audio, binding)
+        playerVM.mpPause(binding)
+        playerVM.initializeMediaPlayer(viewModel.getExhibitObject().audio, binding, mainActivity)
 
         binding.apply {
             exhibitPager.adapter = tabAdapter
