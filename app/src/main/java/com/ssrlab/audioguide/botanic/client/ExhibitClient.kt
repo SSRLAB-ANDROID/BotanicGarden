@@ -18,7 +18,7 @@ object ExhibitClient {
         if (client == null) client = OkHttpClient.Builder().build()
 
         val request = Request.Builder()
-            .url("https://itamiuchiha.pythonanywhere.com/api/rest/placelocale/")
+            .url("https://cbg.krokam.by/api/rest/placelocale/")
             .build()
 
         client!!.newCall(request).enqueue(object : Callback {

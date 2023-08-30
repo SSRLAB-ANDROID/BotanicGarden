@@ -22,6 +22,7 @@ import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
+import com.mapbox.maps.extension.style.expressions.generated.Expression
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants
@@ -38,6 +39,7 @@ import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineColorResources
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineResources
+import com.mapbox.navigation.ui.maps.route.line.model.RouteLineScaleValue
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentMapBinding
@@ -106,8 +108,7 @@ class FragmentMap: Fragment() {
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS).apply {
             for (i in exhibitViewModel.getList()) {
                 val point = Point.fromLngLat(i.lng, i.lat)
-                val parts = i.placeName.split(".")
-                val pointNumber = parts.firstOrNull()!!.trim()
+                val pointNumber = i.placeId.toString()
                 addPoint(point, i, pointNumber)
                 pointActivatedArray.add(false)
             }
@@ -134,6 +135,16 @@ class FragmentMap: Fragment() {
                 .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
                 .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
                 .build())
+            .routeLineScaleExpression(buildScaleExpression(
+                listOf(
+                    RouteLineScaleValue(3f, 2f, 1f),
+                    RouteLineScaleValue(5f, 3f, 1f),
+                    RouteLineScaleValue(6f, 4f, 1f),
+                    RouteLineScaleValue(7f, 5f, 1f),
+                    RouteLineScaleValue(8f, 6f, 1f),
+                    RouteLineScaleValue(9f, 7f, 1f)
+                )
+            ))
             .build()
 
         options = MapboxRouteLineOptions.Builder(mainActivity)
@@ -286,6 +297,23 @@ class FragmentMap: Fragment() {
 
         }
         ViewMapBinding.bind(viewAnnotation)
+    }
+
+    private fun buildScaleExpression(scalingValues: List<RouteLineScaleValue>) : Expression {
+        val expressionBuilder = Expression.ExpressionBuilder("interpolate")
+        expressionBuilder.addArgument(Expression.exponential { literal(1.5) })
+        expressionBuilder.zoom()
+        scalingValues.forEach { routeLineScaleValue ->
+            expressionBuilder.stop {
+                this.literal(routeLineScaleValue.scaleStop.toDouble())
+                product {
+                    literal(routeLineScaleValue.scaleMultiplier.toDouble())
+                    literal(routeLineScaleValue.scale.toDouble())
+                }
+            }
+        }
+
+        return expressionBuilder.build()
     }
 
     private fun requestLocationPermission() {

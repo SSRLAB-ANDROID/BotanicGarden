@@ -16,7 +16,7 @@
     <string name="cant_update">Can\'t update data, seems there is a problem with internet</string>
 
     <!--  Exhibit  -->
-    <string name="show_on_the_map">Show on the map</string>
+    <string name="show_on_the_map">See on map</string>
     <string name="current_time_plug">00:00</string>
     <string name="duration_plug">01:30</string>
     <string name="_0_5">0,5</string>
@@ -34,13 +34,13 @@
     <string name="number_2">+375 17 379 69 15</string>
     <string name="email_title">Email:</string>
     <string name="email">office@cbg.org.by</string>
-    <string name="site_title">Official site:</string>
+    <string name="site_title">Official website:</string>
     <string name="site">https://cbg.org.by/</string>
 
     <!--  Map  -->
-    <string name="build_route">Build route</string>
+    <string name="build_route">Go to the object</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNDlzcjFiMDRiNDNwczdncm94YnN6OCJ9.kpltoznp8B0lXFM4vGEz0w</string>
-    <string name="something_went_wrong">Something went wrong</string>
+    <string name="something_went_wrong">Something went wrong :(</string>
 
     <!--  Language  -->
     <string name="be">BE</string>

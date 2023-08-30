@@ -3,6 +3,7 @@ package com.ssrlab.audioguide.botanic.vm
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.ssrlab.audioguide.botanic.MainActivity
@@ -23,35 +24,48 @@ class PlayerViewModel: ViewModel() {
     private var binding: FragmentExhibitBinding? = null
     private val helpFunctions = HelpFunctions()
 
-    fun initializeMediaPlayer(uri: String, binding: FragmentExhibitBinding) {
+    fun initializeMediaPlayer(uri: String, binding: FragmentExhibitBinding, activity: MainActivity) {
 
-        mpStatus = "play"
-
-        mediaPlayer = MediaPlayer()
-        try {
-
-            mediaPlayer!!.setDataSource(uri)
-            if (speed != null) {
-                val playBackParams = PlaybackParams()
-                playBackParams.speed = speed!!
-                mediaPlayer!!.playbackParams = playBackParams
-            }
-            mediaPlayer!!.prepare()
-
-            this.binding = binding
+        if (uri != "null") {
 
             binding.apply {
-                exhibitDurationBar.max = mediaPlayer!!.duration
-                exhibitDurationBar.progress = 0
-                exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
-                exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                exhibitPlayIc.visibility = View.VISIBLE
+                exhibitVolumeIc.visibility = View.VISIBLE
+                exhibitSpeedIc.visibility = View.VISIBLE
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
 
-        listenProgress(mediaPlayer!!)
+            mpStatus = "play"
+
+            mediaPlayer = MediaPlayer()
+
+            try {
+                mediaPlayer!!.setDataSource(uri)
+                if (speed != null) {
+                    val playBackParams = PlaybackParams()
+                    playBackParams.speed = speed!!
+                    mediaPlayer!!.playbackParams = playBackParams
+                }
+                mediaPlayer!!.prepare()
+
+                this.binding = binding
+
+                binding.apply {
+                    exhibitDurationBar.max = mediaPlayer!!.duration
+                    exhibitDurationBar.progress = 0
+                    exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
+                    exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                    exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            listenProgress(mediaPlayer!!, activity)
+        } else binding.apply {
+            exhibitPlayIc.visibility = View.INVISIBLE
+            exhibitVolumeIc.visibility = View.INVISIBLE
+            exhibitSpeedIc.visibility = View.INVISIBLE
+        }
     }
 
     fun playAudio(context: Context, binding: FragmentExhibitBinding, activity: MainActivity) {
@@ -90,6 +104,12 @@ class PlayerViewModel: ViewModel() {
         mediaPlayer?.playbackParams = playBackParams
     }
 
+    fun mpPause(binding: FragmentExhibitBinding) {
+        mpStatus = "continue"
+        mediaPlayer?.pause()
+        binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+    }
+
     fun mpStop() {
 
         if (mpStatus != "play") {
@@ -103,29 +123,31 @@ class PlayerViewModel: ViewModel() {
                     mediaPlayer = null
                 } else mediaPlayer?.release()
             }
-        }
+        } else if (mpStatus == "stop") { }
     }
 
     private suspend fun initProgressListener(mediaPlayer: MediaPlayer?, binding: FragmentExhibitBinding, activity: MainActivity) {
         while (mpStatus == "pause") {
-            binding.apply {
-                activity.runOnUiThread {
-                    exhibitCurrentTime.text = mediaPlayer?.currentPosition?.let {
-                        helpFunctions.convertToTimerMode(it)
+            activity.runOnUiThread {
+                binding.apply {
+                    if (mediaPlayer?.isPlaying == true) {
+                        exhibitCurrentTime.text = mediaPlayer?.currentPosition?.let {
+                            helpFunctions.convertToTimerMode(it)
+                        }
+                        exhibitDurationBar.progress = mediaPlayer?.currentPosition!!
                     }
-                    exhibitDurationBar.progress = mediaPlayer?.currentPosition!!
                 }
             }
-            delay(250)
+            delay(50)
 
             binding.exhibitDurationBar.apply {
                 if (progress == max) {
                     mpStatus = "play"
-                    delay(250)
+                    delay(50)
 
                     mediaPlayer?.seekTo(0)
-                    binding.apply {
-                        activity.runOnUiThread {
+                    activity.runOnUiThread {
+                        binding.apply {
                             exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
                             exhibitDurationBar.progress = 0
                             exhibitCurrentTime.text = mediaPlayer?.currentPosition?.let {
@@ -138,11 +160,15 @@ class PlayerViewModel: ViewModel() {
         }
     }
 
-    private fun listenProgress(mediaPlayer: MediaPlayer) {
-        binding!!.exhibitDurationBar.setOnSeekBarChangeListener(helpFunctions.createSeekBarProgressListener {
-            mediaPlayer.seekTo(it)
-            binding!!.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer.currentPosition)
-        })
+    private fun listenProgress(mediaPlayer: MediaPlayer, activity: MainActivity) {
+        binding!!.exhibitDurationBar.setOnSeekBarChangeListener(
+            helpFunctions.createSeekBarProgressListener {
+                mediaPlayer.seekTo(it)
+                activity.runOnUiThread {
+                    binding!!.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer.currentPosition)
+                }
+            }
+        )
     }
 
     override fun onCleared() {

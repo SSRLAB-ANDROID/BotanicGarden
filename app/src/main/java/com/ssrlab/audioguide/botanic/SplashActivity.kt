@@ -75,7 +75,7 @@ class SplashActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     private fun loadPreferences() {
         val sharedPreferences = getSharedPreferences(mainApp.constPreferences, MODE_PRIVATE)
-        val locale = sharedPreferences.getString(mainApp.constLocale, "en")
+        val locale = sharedPreferences.getString(mainApp.constLocale, "ru")
         locale?.let { Locale(it) }?.let { mainApp.setLocale(it) }
 
         val config = mainApp.getContext().resources.configuration
