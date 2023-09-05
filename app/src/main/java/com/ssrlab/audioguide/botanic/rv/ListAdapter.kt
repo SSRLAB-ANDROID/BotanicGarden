@@ -45,6 +45,7 @@ class ListAdapter(
             val itemView = holder.itemView
             itemView.findViewById<ImageView>(R.id.rv_item_image).load(list[position - 2].imagePreview) {
                 crossfade(true)
+                placeholder(R.drawable.ic_flower)
                 size(100, 100)
                 transformations(RoundedCornersTransformation(10f))
             }
