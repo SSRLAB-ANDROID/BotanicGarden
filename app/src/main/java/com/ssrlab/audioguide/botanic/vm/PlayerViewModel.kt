@@ -105,8 +105,12 @@ class PlayerViewModel: ViewModel() {
     }
 
     fun mpPause(binding: FragmentExhibitBinding) {
-        mpStatus = "continue"
-        mediaPlayer?.pause()
+        if (mpStatus != "stop") {
+            if (mediaPlayer?.isPlaying == true) {
+                mpStatus = "continue"
+                mediaPlayer?.pause()
+            }
+        }
         binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
     }
 
