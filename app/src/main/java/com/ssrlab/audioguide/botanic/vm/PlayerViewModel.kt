@@ -118,15 +118,16 @@ class PlayerViewModel: ViewModel() {
 
         if (mpStatus != "play") {
 
-            mpStatus = "stop"
+            if (mpStatus != "stop") {
+                mpStatus = "stop"
 
-            if (mediaPlayer != null) {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer!!.stop()
                     mediaPlayer!!.release()
                     mediaPlayer = null
                 } else mediaPlayer?.release()
-            }
+            } else mediaPlayer!!.release()
+
         } else if (mpStatus == "stop") { }
     }
 

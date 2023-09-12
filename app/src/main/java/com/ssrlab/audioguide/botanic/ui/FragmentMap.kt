@@ -169,7 +169,7 @@ class FragmentMap: Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mainActivity)
 
         binding.mapBack.setOnClickListener {
-            mainActivity.onBackPressedDispatcher.onBackPressed()
+            mainActivity.getNavController().popBackStack()
         }
 
         return binding.root
