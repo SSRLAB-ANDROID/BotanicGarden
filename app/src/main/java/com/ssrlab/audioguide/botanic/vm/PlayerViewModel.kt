@@ -105,8 +105,12 @@ class PlayerViewModel: ViewModel() {
     }
 
     fun mpPause(binding: FragmentExhibitBinding) {
-        mpStatus = "continue"
-        mediaPlayer?.pause()
+        if (mpStatus != "stop") {
+            if (mediaPlayer?.isPlaying == true) {
+                mpStatus = "continue"
+                mediaPlayer?.pause()
+            }
+        }
         binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
     }
 
@@ -114,15 +118,16 @@ class PlayerViewModel: ViewModel() {
 
         if (mpStatus != "play") {
 
-            mpStatus = "stop"
+            if (mpStatus != "stop") {
+                mpStatus = "stop"
 
-            if (mediaPlayer != null) {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer!!.stop()
                     mediaPlayer!!.release()
                     mediaPlayer = null
                 } else mediaPlayer?.release()
-            }
+            } else mediaPlayer!!.release()
+
         } else if (mpStatus == "stop") { }
     }
 

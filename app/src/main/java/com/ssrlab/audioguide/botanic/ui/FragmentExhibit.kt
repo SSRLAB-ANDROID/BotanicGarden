@@ -83,6 +83,7 @@ class FragmentExhibit: Fragment() {
     override fun onStop() {
         super.onStop()
 
+        playerVM.mpPause(binding)
         scope.launch {
             delay(10)
             playerVM.mpStop()
