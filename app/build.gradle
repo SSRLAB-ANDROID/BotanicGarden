@@ -8,14 +8,20 @@ android {
     namespace 'com.ssrlab.audioguide.botanic'
     compileSdk 34
 
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     defaultConfig {
         viewBinding.enabled = true
 
         applicationId "com.ssrlab.audioguide.botanic"
         minSdk 24
         targetSdk 34
-        versionCode 6
-        versionName "1.5"
+        versionCode 8
+        versionName "1.5.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
