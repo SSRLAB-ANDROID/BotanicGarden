@@ -1,5 +1,6 @@
 package com.ssrlab.audioguide.botanic.client
 
+import com.ssrlab.audioguide.botanic.SplashActivity
 import com.ssrlab.audioguide.botanic.db.ExhibitDao
 import com.ssrlab.audioguide.botanic.db.ExhibitObject
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +14,7 @@ object ExhibitClient {
 
     private var client: OkHttpClient? = null
 
-    fun getExhibits(scope: CoroutineScope, dbDao: ExhibitDao, onSuccess: () -> Unit, onFailure: () -> Unit) {
+    fun getExhibits(scope: CoroutineScope, dbDao: ExhibitDao, activity: SplashActivity, onSuccess: () -> Unit, onFailure: () -> Unit) {
 
         if (client == null) client = OkHttpClient.Builder().build()
 
@@ -31,6 +32,8 @@ object ExhibitClient {
                 val responseBody = response.body?.string()
                 val jArray = responseBody?.let { JSONArray(it) }
 
+                val arrayOfExhibits = arrayListOf<ExhibitObject>()
+
                 for (i in 0 until jArray?.length()!!) {
                     (jArray[i] as JSONObject).apply {
                         val exhibitObject = ExhibitObject(
@@ -47,9 +50,17 @@ object ExhibitClient {
                             images = parseJsonToMap(this.getString("place_images"))
                         )
 
-                        scope.launch {
-                            dbDao.insert(exhibitObject)
-                        }
+                        arrayOfExhibits.add(exhibitObject)
+                    }
+                }
+
+                scope.launch {
+                    val dbArray = dbDao.getAllExhibits() as ArrayList
+
+                    if (dbArray != arrayOfExhibits) {
+                        dbDao.deleteExhibits()
+                        activity.getExternalFilesDir(null)?.deleteRecursively()
+                        for (i in arrayOfExhibits) dbDao.insert(i)
                     }
                 }
 

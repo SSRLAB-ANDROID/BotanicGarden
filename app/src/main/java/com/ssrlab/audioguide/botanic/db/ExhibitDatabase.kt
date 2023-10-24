@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ssrlab.audioguide.botanic.helpers.MapTypeConverter
 
-@Database(entities = [ExhibitObject::class], version = 3, exportSchema = false)
+@Database(entities = [ExhibitObject::class], version = 4, exportSchema = false)
 @TypeConverters(MapTypeConverter::class)
 abstract class ExhibitDatabase : RoomDatabase() {
     abstract fun exhibitDao(): ExhibitDao
