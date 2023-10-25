@@ -50,7 +50,7 @@ class SplashActivity : AppCompatActivity() {
             .build()
         exhibitDao = db.exhibitDao()
 
-        ExhibitClient.getExhibits(scope, exhibitDao, {
+        ExhibitClient.getExhibits(scope, exhibitDao, this@SplashActivity, {
             runOnUiThread {
                 binding.apply{
                     startButton.setOnClickListener { navigateToMainActivity() }

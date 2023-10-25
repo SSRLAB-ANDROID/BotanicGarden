@@ -25,6 +25,7 @@ class MainApplication: Application() {
         config.setLocale(loc)
         context.resources.configuration.setLocale(loc)
     }
+    fun getLocale() = locale
 
     fun setLocaleInt(locale: String) {
         when (locale) {

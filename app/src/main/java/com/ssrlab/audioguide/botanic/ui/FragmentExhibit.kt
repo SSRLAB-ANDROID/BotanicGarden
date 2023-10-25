@@ -7,20 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
 import com.ssrlab.audioguide.botanic.rv.tab.TabExhibitAdapter
+import com.ssrlab.audioguide.botanic.utils.BotanicMediaPlayer
 import com.ssrlab.audioguide.botanic.vm.ExhibitViewModel
-import com.ssrlab.audioguide.botanic.vm.PlayerViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.io.File
 
 class FragmentExhibit: Fragment() {
 
@@ -30,8 +27,6 @@ class FragmentExhibit: Fragment() {
     private lateinit var tabAdapter: TabExhibitAdapter
 
     private val viewModel: ExhibitViewModel by activityViewModels()
-    private val playerVM: PlayerViewModel by viewModels()
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var window: PopupWindow
 
@@ -52,12 +47,7 @@ class FragmentExhibit: Fragment() {
 
         updateExhibit()
 
-        binding.exhibitBack.setOnClickListener {
-            scope.launch {
-                delay(500)
-                mainActivity.onBackPressedDispatcher.onBackPressed()
-            }
-        }
+        binding.exhibitBack.setOnClickListener { mainActivity.onBackPressedDispatcher.onBackPressed() }
 
         return binding.root
     }
@@ -75,19 +65,15 @@ class FragmentExhibit: Fragment() {
             mainActivity.getNavController().navigate(R.id.map_graph)
         }
 
-        binding.exhibitPlayIc.setOnClickListener {
-            playerVM.playAudio(mainActivity, binding, mainActivity)
+        binding.exhibitPlayIc.apply {
+            if (this.visibility == View.VISIBLE) setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
         }
     }
 
     override fun onStop() {
         super.onStop()
 
-        playerVM.mpPause(binding)
-        scope.launch {
-            delay(10)
-            playerVM.mpStop()
-        }
+        BotanicMediaPlayer.pauseAudio(binding)
     }
 
     private fun setUpIdObserver() {
@@ -163,8 +149,16 @@ class FragmentExhibit: Fragment() {
 
         tabAdapter = TabExhibitAdapter(activity as MainActivity, imagesArray, viewModel)
 
-        playerVM.mpPause(binding)
-        playerVM.initializeMediaPlayer(viewModel.getExhibitObject().audio, binding, mainActivity)
+        checkAudioAvailability({
+            binding.exhibitPlayIc.visibility = View.VISIBLE
+            binding.exhibitVolumeIc.visibility = View.VISIBLE
+            binding.exhibitSpeedIc.visibility = View.VISIBLE
+            BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, it.toUri())
+        }) {
+            binding.exhibitPlayIc.visibility = View.INVISIBLE
+            binding.exhibitVolumeIc.visibility = View.INVISIBLE
+            binding.exhibitSpeedIc.visibility = View.INVISIBLE
+        }
 
         binding.apply {
             exhibitPager.adapter = tabAdapter
@@ -219,8 +213,14 @@ class FragmentExhibit: Fragment() {
 
     private fun setSpeedAction(view: View, speed: Float) {
         view.setOnClickListener {
-            playerVM.changeAudioSpeed(speed)
+            BotanicMediaPlayer.changeAudioSpeed(speed)
             window.dismiss()
         }
+    }
+
+    private fun checkAudioAvailability(onSuccess: (File) -> Unit, onFailure: () -> Unit) {
+        val file = File(mainActivity.getExternalFilesDir(null), "botanical_${viewModel.getExhibitObject().placeId}_${mainActivity.getApp().getLocale()}.mp3")
+        if (file.exists()) onSuccess(file)
+        else onFailure()
     }
 }
