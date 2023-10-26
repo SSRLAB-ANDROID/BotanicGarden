@@ -1,9 +1,6 @@
 package com.ssrlab.audioguide.botanic.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ExhibitDao {
@@ -12,4 +9,7 @@ interface ExhibitDao {
 
     @Query("SELECT * FROM exhibit_table")
     fun getAllExhibits(): List<ExhibitObject>
+
+    @Query("DELETE FROM exhibit_table")
+    fun deleteExhibits()
 }

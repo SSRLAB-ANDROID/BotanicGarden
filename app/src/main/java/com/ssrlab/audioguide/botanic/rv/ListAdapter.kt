@@ -9,6 +9,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.size.Scale
 import coil.transform.RoundedCornersTransformation
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
@@ -46,8 +47,8 @@ class ListAdapter(
             itemView.findViewById<ImageView>(R.id.rv_item_image).load(list[position - 2].imagePreview) {
                 crossfade(true)
                 placeholder(R.drawable.ic_flower)
-                size(100, 100)
-                transformations(RoundedCornersTransformation(10f))
+                scale(Scale.FIT)
+                transformations(RoundedCornersTransformation(32f))
             }
             itemView.findViewById<TextView>(R.id.rv_item_title).text = list[position - 2].placeName
             itemView.setOnClickListener {
