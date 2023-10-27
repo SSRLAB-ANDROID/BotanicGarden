@@ -26,6 +26,7 @@ object BotanicMediaPlayer {
         mediaPlayer = MediaPlayer()
 
         try {
+            pauseAudio(binding)
             mediaPlayer!!.setDataSource(activity, uri)
 
             if (speed != null) {
@@ -40,13 +41,11 @@ object BotanicMediaPlayer {
                 exhibitDurationBar.progress = 0
                 exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
                 exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
             }
 
             listenProgress(binding)
-
         } catch (e:IOException) {
-            Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
+            activity.runOnUiThread { Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show() }
         }
     }
 
