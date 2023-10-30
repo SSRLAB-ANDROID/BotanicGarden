@@ -19,14 +19,14 @@ object BotanicMediaPlayer {
     private var playerStatus = ""
 
     private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Unconfined + job)
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    fun initializeMediaPlayer(activity: MainActivity, binding: FragmentExhibitBinding, uri: Uri) {
+    fun initializeMediaPlayer(activity: MainActivity, binding: FragmentExhibitBinding, uri: Uri, onSuccess: () -> Unit) {
+        pauseAudio(binding)
         playerStatus = "play"
         mediaPlayer = MediaPlayer()
 
         try {
-            pauseAudio(binding)
             mediaPlayer!!.setDataSource(activity, uri)
 
             if (speed != null) {
@@ -44,6 +44,7 @@ object BotanicMediaPlayer {
             }
 
             listenProgress(binding)
+            onSuccess()
         } catch (e:IOException) {
             activity.runOnUiThread { Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show() }
         }
@@ -56,15 +57,15 @@ object BotanicMediaPlayer {
                     mediaPlayer!!.pause()
                     playerStatus = "play"
 
-                    binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                    activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
                 }
                 "play" -> {
                     try {
                         mediaPlayer!!.start()
                         playerStatus = "pause"
 
-                        binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector)
-                        initProgressListener(binding)
+                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector) }
+                        initProgressListener(activity, binding)
                     } catch (e: Exception) {
                         Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
                     }
@@ -76,6 +77,7 @@ object BotanicMediaPlayer {
     fun pauseAudio(binding: FragmentExhibitBinding) {
         if (playerStatus == "pause") {
             mediaPlayer!!.pause()
+            mediaPlayer!!.stop()
             playerStatus = "play"
 
             binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
@@ -89,13 +91,15 @@ object BotanicMediaPlayer {
         mediaPlayer?.playbackParams = playBackParams
     }
 
-    private suspend fun initProgressListener(binding: FragmentExhibitBinding) {
+    private suspend fun initProgressListener(activity: MainActivity, binding: FragmentExhibitBinding) {
         while (playerStatus == "pause") {
             scope.launch {
-                binding.apply {
-                    if (mediaPlayer?.isPlaying == true) {
-                        exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                        exhibitDurationBar.progress = mediaPlayer!!.currentPosition
+                activity.runOnUiThread {
+                    binding.apply {
+                        if (mediaPlayer?.isPlaying == true) {
+                            exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                            exhibitDurationBar.progress = mediaPlayer!!.currentPosition
+                        }
                     }
                 }
             }
@@ -108,10 +112,12 @@ object BotanicMediaPlayer {
 
                     mediaPlayer?.seekTo(0)
                     scope.launch {
-                        binding.apply {
-                            exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
-                            exhibitDurationBar.progress = 0
-                            exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                        activity.runOnUiThread {
+                            binding.apply {
+                                exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                                exhibitDurationBar.progress = 0
+                                exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                            }
                         }
                     }
                 }

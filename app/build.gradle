@@ -83,9 +83,12 @@ dependencies {
 
     implementation "androidx.annotation:annotation:1.7.0"
 
-    implementation 'androidx.room:room-runtime:2.6.0'
-    implementation 'androidx.room:room-ktx:2.6.0'
-    kapt 'androidx.room:room-compiler:2.6.0'
+    //noinspection GradleDependency
+    implementation 'androidx.room:room-runtime:2.5.2'
+    //noinspection GradleDependency
+    implementation 'androidx.room:room-ktx:2.5.2'
+    //noinspection GradleDependency
+    kapt 'androidx.room:room-compiler:2.5.2'
 
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'

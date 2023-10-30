@@ -63,7 +63,7 @@ class FragmentExhibit: Fragment() {
     override fun onResume() {
         super.onResume()
 
-        setUpIdObserver()
+        setUpMoveActions()
         setUpOrderAction()
         setUpVolumeButton()
         setUpSpeedList()
@@ -80,42 +80,53 @@ class FragmentExhibit: Fragment() {
         BotanicMediaPlayer.pauseAudio(binding)
     }
 
-    private fun setUpIdObserver() {
-        viewModel.id.observe(this) {
-            when (it) {
-                0 -> {
+    private fun setUpMoveActions() {
+        viewModel.apply {
+            id.observe(this@FragmentExhibit) {
+                when (it) {
+                    0 -> {
+                        backwardObserver.value = false
+                        forwardObserver.value = true
+                    }
+                    getList().size - 1 -> {
+                        forwardObserver.value = false
+                        backwardObserver.value = true
+                    }
+                    else -> {
+                        forwardObserver.value = true
+                        backwardObserver.value = true
+                    }
+                }
+            }
+
+            forwardObserver.observe(this@FragmentExhibit) {
+                if (it) {
                     binding.apply {
                         exhibitNextIc.setImageResource(R.drawable.ic_next_selector)
                         exhibitNextIc.isClickable = true
                         exhibitNextIc.isFocusable = true
-
-                        exhibitPreviousIc.setImageResource(R.drawable.ic_previous_disabled)
-                        exhibitPreviousIc.isClickable = false
-                        exhibitPreviousIc.isFocusable = false
                     }
-                }
-
-                viewModel.getList().size - 1 -> {
+                } else {
                     binding.apply {
-                        exhibitPreviousIc.setImageResource(R.drawable.ic_previous_selector)
-                        exhibitPreviousIc.isClickable = true
-                        exhibitPreviousIc.isFocusable = true
-
                         exhibitNextIc.setImageResource(R.drawable.ic_next_disabled)
                         exhibitNextIc.isClickable = false
                         exhibitNextIc.isFocusable = false
                     }
                 }
+            }
 
-                else -> {
+            backwardObserver.observe(this@FragmentExhibit) {
+                if (it) {
                     binding.apply {
-                        exhibitNextIc.setImageResource(R.drawable.ic_next_selector)
-                        exhibitNextIc.isClickable = true
-                        exhibitNextIc.isFocusable = true
-
                         exhibitPreviousIc.setImageResource(R.drawable.ic_previous_selector)
                         exhibitPreviousIc.isClickable = true
                         exhibitPreviousIc.isFocusable = true
+                    }
+                } else {
+                    binding.apply {
+                        exhibitPreviousIc.setImageResource(R.drawable.ic_previous_disabled)
+                        exhibitPreviousIc.isClickable = false
+                        exhibitPreviousIc.isFocusable = false
                     }
                 }
             }
@@ -241,16 +252,17 @@ class FragmentExhibit: Fragment() {
     }
 
     private fun initMediaPlayer(file: File) {
-        binding.apply {
-            mainActivity.runOnUiThread {
-                exhibitPlayLoader.visibility = View.INVISIBLE
-                exhibitPlayIc.visibility = View.VISIBLE
-                exhibitVolumeIc.visibility = View.VISIBLE
-                exhibitSpeedIc.visibility = View.VISIBLE
+        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, file.toUri()) {
+            binding.apply {
+                scope.launch {
+                    delay(200)
+                    exhibitPlayLoader.visibility = View.INVISIBLE
+                    exhibitPlayIc.visibility = View.VISIBLE
+                    exhibitVolumeIc.visibility = View.VISIBLE
+                    exhibitSpeedIc.visibility = View.VISIBLE
+                    exhibitPlayIc.setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
+                }
             }
         }
-
-        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, file.toUri())
-        binding.exhibitPlayIc.setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
     }
 }

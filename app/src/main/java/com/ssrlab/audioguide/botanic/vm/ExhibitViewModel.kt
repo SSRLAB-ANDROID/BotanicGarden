@@ -12,7 +12,11 @@ class ExhibitViewModel: ViewModel() {
     fun getExhibitObject() = exhibitObject
 
     //Current object ID
-    var id = MutableLiveData<Int>()
+    val id = MutableLiveData<Int>()
+
+    //Observable for forward and backward
+    val forwardObserver = MutableLiveData<Boolean>()
+    val backwardObserver = MutableLiveData<Boolean>()
 
     //List of objects
     private var list = arrayListOf<ExhibitObject>()
