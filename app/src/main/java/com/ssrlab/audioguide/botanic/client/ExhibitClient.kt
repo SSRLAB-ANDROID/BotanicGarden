@@ -1,14 +1,19 @@
 package com.ssrlab.audioguide.botanic.client
 
+import android.util.Log
 import com.ssrlab.audioguide.botanic.SplashActivity
 import com.ssrlab.audioguide.botanic.db.ExhibitDao
 import com.ssrlab.audioguide.botanic.db.ExhibitObject
+import com.ssrlab.audioguide.botanic.utils.REQUEST_TIME_OUT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object ExhibitClient {
 
@@ -16,7 +21,11 @@ object ExhibitClient {
 
     fun getExhibits(scope: CoroutineScope, dbDao: ExhibitDao, activity: SplashActivity, onSuccess: () -> Unit, onFailure: () -> Unit) {
 
-        if (client == null) client = OkHttpClient.Builder().build()
+        if (client == null) client = OkHttpClient.Builder()
+            .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
+            .writeTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
+            .readTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
+            .build()
 
         val request = Request.Builder()
             .url("https://cbg.krokam.by/api/rest/placelocale/")
@@ -65,6 +74,33 @@ object ExhibitClient {
                 }
 
                 onSuccess()
+            }
+        })
+    }
+
+    fun getAudio(link: String, file: File, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val request = Request.Builder()
+            .url(link)
+            .build()
+
+        client?.newCall(request)?.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(e.message!!)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    Log.e("File response", "Response error")
+                    response.body?.string()?.let { onFailure(it) }
+                } else {
+                    val fos = FileOutputStream(file)
+                    fos.write(response.body?.bytes())
+                    fos.close()
+
+                    onSuccess()
+                }
+
+                response.close()
             }
         })
     }
