@@ -2,13 +2,14 @@ package com.ssrlab.audioguide.botanic.utils
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
-import android.net.Uri
+import android.view.View
 import android.widget.Toast
+import androidx.core.net.toUri
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
 import kotlinx.coroutines.*
-import java.io.IOException
+import java.io.File
 
 object BotanicMediaPlayer {
 
@@ -21,10 +22,27 @@ object BotanicMediaPlayer {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    fun initializeMediaPlayer(activity: MainActivity, binding: FragmentExhibitBinding, uri: Uri, onSuccess: () -> Unit) {
+    fun initializeMediaPlayer(activity: MainActivity, binding: FragmentExhibitBinding, file: File, onSuccess: () -> Unit) {
         pauseAudio(binding)
         playerStatus = "play"
         mediaPlayer = MediaPlayer()
+
+        val uri = file.toUri()
+
+        activity.runOnUiThread {
+            while (file.length() == 0L) {
+
+                binding.apply {
+                    exhibitPlayLoader.visibility = View.VISIBLE
+                    exhibitPlayIc.visibility = View.INVISIBLE
+                }
+            }
+
+            binding.apply {
+                exhibitPlayLoader.visibility = View.INVISIBLE
+                exhibitPlayIc.visibility = View.VISIBLE
+            }
+        }
 
         try {
             mediaPlayer!!.setDataSource(activity, uri)
@@ -44,8 +62,11 @@ object BotanicMediaPlayer {
             }
 
             listenProgress(binding)
-            onSuccess()
-        } catch (e:IOException) {
+
+            mediaPlayer!!.setOnPreparedListener {
+                onSuccess()
+            }
+        } catch (e: Exception) {
             activity.runOnUiThread { Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show() }
         }
     }
@@ -84,11 +105,18 @@ object BotanicMediaPlayer {
         }
     }
 
-    fun changeAudioSpeed(speed: Float) {
+    fun changeAudioSpeed(speed: Float, activity: MainActivity, binding: FragmentExhibitBinding) {
         val playBackParams = PlaybackParams()
         playBackParams.speed = speed
         this.speed = speed
         mediaPlayer?.playbackParams = playBackParams
+
+        if (playerStatus == "play") {
+            mediaPlayer!!.pause()
+            playerStatus = "play"
+
+            activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
+        }
     }
 
     private suspend fun initProgressListener(activity: MainActivity, binding: FragmentExhibitBinding) {
