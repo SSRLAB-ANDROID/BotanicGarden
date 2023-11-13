@@ -51,7 +51,7 @@ class DialogMap(
         binding.apply {
             bottomSheetImage.load(point.imagePreview) {
                 crossfade(true)
-                    transformations(RoundedCornersTransformation(32f))
+                transformations(RoundedCornersTransformation(32f))
             }
             bottomSheetTitle.text = point.placeName
         }
