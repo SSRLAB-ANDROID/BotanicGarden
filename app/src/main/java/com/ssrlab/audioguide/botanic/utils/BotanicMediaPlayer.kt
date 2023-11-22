@@ -65,6 +65,7 @@ object BotanicMediaPlayer {
                 listenProgress(binding)
                 onSuccess()
             }
+            
         } catch (e: Exception) {
             activity.runOnUiThread { Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show() }
         }

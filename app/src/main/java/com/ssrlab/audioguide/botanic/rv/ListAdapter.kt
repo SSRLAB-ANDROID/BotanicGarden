@@ -50,7 +50,7 @@ class ListAdapter(
                 scale(Scale.FIT)
                 transformations(RoundedCornersTransformation(32f))
             }
-            itemView.findViewById<TextView>(R.id.rv_item_title).text = list[position - 2].placeName
+            itemView.findViewById<TextView>(R.id.rv_item_title).text = list[position - 2].placeName.substringAfter(". ")
             itemView.setOnClickListener {
                 actionFromItem()
                 viewModel.id.value = position - 2
@@ -58,9 +58,7 @@ class ListAdapter(
         } else if (position == 0) {
             val itemView = holder.itemView
             val languageButton = itemView.findViewById<ImageView>(R.id.rv_header_language)
-            languageButton.setOnClickListener {
-                showLanguageList(languageButton)
-            }
+            languageButton.setOnClickListener { showLanguageList(languageButton) }
         }
     }
 

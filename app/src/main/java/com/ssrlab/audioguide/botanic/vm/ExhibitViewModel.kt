@@ -106,7 +106,7 @@ class ExhibitViewModel: ViewModel() {
             TabLayoutMediator(binding.exhibitTabLayout, binding.exhibitPager) { _, _ -> }.attach()
 
             exhibitInfoText.text = exhibitObject.audioText
-            exhibitTitle.text = exhibitObject.placeName
+            exhibitTitle.text = exhibitObject.placeName.substringAfter(". ")
         }
     }
 

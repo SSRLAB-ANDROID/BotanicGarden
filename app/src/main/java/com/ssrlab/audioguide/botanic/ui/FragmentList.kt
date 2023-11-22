@@ -83,6 +83,8 @@ class FragmentList: Fragment() {
                     listByLanguage.add(newObject)
                     index++
                 }
+
+                listByLanguage.sortBy { it.placeId }
                 viewModel.setList(listByLanguage)
 
                 runOnUiThread {
