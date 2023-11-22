@@ -52,25 +52,15 @@ class ExhibitViewModel: ViewModel() {
     private fun moveButtonsHelper(pos: Int, active: Boolean, binding: FragmentExhibitBinding) {
         binding.apply {
             if (pos == 0) {
-                if (active) {
-                    exhibitNextIc.setImageResource(R.drawable.ic_next_selector)
-                    exhibitNextIc.isClickable = true
-                    exhibitNextIc.isFocusable = true
-                } else {
-                    exhibitNextIc.setImageResource(R.drawable.ic_next_disabled)
-                    exhibitNextIc.isClickable = false
-                    exhibitNextIc.isFocusable = false
-                }
+                exhibitNextIc.isClickable = active
+                exhibitNextIc.isFocusable = active
+                if (active) exhibitNextIc.setImageResource(R.drawable.ic_next_selector)
+                else exhibitNextIc.setImageResource(R.drawable.ic_next_disabled)
             } else {
-                if (active) {
-                    exhibitPreviousIc.setImageResource(R.drawable.ic_previous_selector)
-                    exhibitPreviousIc.isClickable = true
-                    exhibitPreviousIc.isFocusable = true
-                } else {
-                    exhibitPreviousIc.setImageResource(R.drawable.ic_previous_disabled)
-                    exhibitPreviousIc.isClickable = false
-                    exhibitPreviousIc.isFocusable = false
-                }
+                exhibitPreviousIc.isClickable = active
+                exhibitPreviousIc.isFocusable = active
+                if (active) exhibitPreviousIc.setImageResource(R.drawable.ic_previous_selector)
+                else exhibitPreviousIc.setImageResource(R.drawable.ic_previous_disabled)
             }
         }
     }
@@ -104,7 +94,7 @@ class ExhibitViewModel: ViewModel() {
     }
 
     fun updateExhibit(window: PopupWindow, binding: FragmentExhibitBinding, tabSetup: (ArrayList<String>) -> Unit) {
-        setChosenItem(list[id.value!!])
+        exhibitObject = list[id.value!!]
 
         if (window.isShowing) window.dismiss()
 
@@ -126,13 +116,10 @@ class ExhibitViewModel: ViewModel() {
 
     //Current object
     private var exhibitObject = ExhibitObject()
-    fun setChosenItem(exhibitObject: ExhibitObject) { this.exhibitObject = exhibitObject }
     fun getExhibitObject() = exhibitObject
 
     //Current object ID
     val id = MutableLiveData<Int>()
-
-
 
     //List of objects
     private var list = arrayListOf<ExhibitObject>()

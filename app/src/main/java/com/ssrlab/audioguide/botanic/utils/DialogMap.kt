@@ -47,11 +47,10 @@ class DialogMap(
     ): View {
 
         binding = ViewMapBottomSheetBinding.inflate(layoutInflater)
-
         binding.apply {
             bottomSheetImage.load(point.imagePreview) {
                 crossfade(true)
-                    transformations(RoundedCornersTransformation(32f))
+                transformations(RoundedCornersTransformation(32f))
             }
             bottomSheetTitle.text = point.placeName
         }
@@ -63,6 +62,8 @@ class DialogMap(
                         .builder()
                         .applyDefaultNavigationOptions()
                         .profile(DirectionsCriteria.PROFILE_WALKING)
+                        .enableRefresh(true)
+                        .language(mainActivity.getApp().getLocale().language)
                         .coordinatesList(listOf(userCoordinates, Point.fromLngLat(point.lng, point.lat)))
                         .build(),
 
@@ -90,9 +91,7 @@ class DialogMap(
             override fun onFailure(
                 reasons: List<RouterFailure>,
                 routeOptions: RouteOptions
-            ) {
-                Toast.makeText(mainActivity, resources.getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
-            }
+            ) { Toast.makeText(mainActivity, resources.getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show() }
 
             @SuppressLint("MissingPermission")
             override fun onRoutesReady(

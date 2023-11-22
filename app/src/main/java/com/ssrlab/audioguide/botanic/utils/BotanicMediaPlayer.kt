@@ -54,16 +54,15 @@ object BotanicMediaPlayer {
             }
             mediaPlayer!!.prepare()
 
-            binding.apply {
-                exhibitDurationBar.max = mediaPlayer!!.duration
-                exhibitDurationBar.progress = 0
-                exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
-                exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-            }
-
-            listenProgress(binding)
-
             mediaPlayer!!.setOnPreparedListener {
+                binding.apply {
+                    exhibitDurationBar.max = mediaPlayer!!.duration
+                    exhibitDurationBar.progress = 0
+                    exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
+                    exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                }
+
+                listenProgress(binding)
                 onSuccess()
             }
         } catch (e: Exception) {
@@ -99,6 +98,8 @@ object BotanicMediaPlayer {
         if (playerStatus == "pause") {
             mediaPlayer!!.pause()
             mediaPlayer!!.stop()
+            mediaPlayer!!.reset()
+
             playerStatus = "play"
 
             binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)

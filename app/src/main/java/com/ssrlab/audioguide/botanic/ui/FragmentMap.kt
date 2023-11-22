@@ -116,23 +116,23 @@ class FragmentMap: Fragment() {
 
         routeLineResources = RouteLineResources.Builder()
             .routeLineColorResources(RouteLineColorResources.Builder()
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
+                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
                 .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
                 .build())
             .routeLineScaleExpression(buildScaleExpression(
@@ -259,7 +259,7 @@ class FragmentMap: Fragment() {
                     literal(0.6)
                 }
                 stop {
-                    literal(20.0)
+                    literal(18.0)
                     literal(1.0)
                 }
             }.toJson()
@@ -270,21 +270,15 @@ class FragmentMap: Fragment() {
     private fun addPoint(point: Point, pointObject: ExhibitObject, pointNumber: String) {
         val viewAnnotation = viewAnnotationManager.addViewAnnotation(
             resId = R.layout.view_map,
-            options = viewAnnotationOptions {
-                geometry(point)
-            }
-        )
+            options = viewAnnotationOptions { geometry(point) })
         annotationArray.add(viewAnnotation)
 
         viewAnnotation.findViewById<TextView>(R.id.view_map_text).text = pointNumber
         viewAnnotation.setOnClickListener {
-            val cameraSettings = cameraOptions {
-                center(point)
-            }
+            val cameraSettings = cameraOptions { center(point) }
             mapView?.camera?.flyTo(cameraSettings)
 
             var currentPoint = Point.fromLngLat(0.0, 0.0)
-
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
@@ -293,9 +287,8 @@ class FragmentMap: Fragment() {
                 viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
                 viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
-
-
         }
+
         ViewMapBinding.bind(viewAnnotation)
     }
 
