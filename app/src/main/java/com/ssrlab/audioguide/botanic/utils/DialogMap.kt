@@ -33,7 +33,8 @@ class DialogMap(
     private val viewAnnotation: View,
     private val viewAnnotationArray: ArrayList<View>,
     private val userCoordinates: Point,
-    private val navigation: MapboxNavigation
+    private val navigation: MapboxNavigation,
+    private val case: Int
     ): BottomSheetDialogFragment() {
 
     private lateinit var binding: ViewMapBottomSheetBinding
@@ -52,23 +53,30 @@ class DialogMap(
                 crossfade(true)
                 transformations(RoundedCornersTransformation(32f))
             }
-            bottomSheetTitle.text = point.placeName
+            bottomSheetTitle.text = point.placeName.substringAfter(". ")
         }
 
         binding.bottomSheetRoute.setOnClickListener {
-
+            if (case == 0) {
                 navigation.requestRoutes(
                     RouteOptions
                         .builder()
                         .applyDefaultNavigationOptions()
                         .profile(DirectionsCriteria.PROFILE_WALKING)
-                        .enableRefresh(true)
-                        .language(mainActivity.getApp().getLocale().language)
-                        .coordinatesList(listOf(userCoordinates, Point.fromLngLat(point.lng, point.lat)))
+                        .coordinatesList(
+                            listOf(
+                                userCoordinates,
+                                Point.fromLngLat(point.lng, point.lat)
+                            )
+                        )
                         .build(),
 
                     setUpCallback()
                 )
+            }
+            else {
+                Toast.makeText(mainActivity, resources.getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root

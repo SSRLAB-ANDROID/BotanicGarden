@@ -97,4 +97,10 @@ class FragmentList: Fragment() {
             }
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (window.isShowing) window.dismiss()
+    }
 }

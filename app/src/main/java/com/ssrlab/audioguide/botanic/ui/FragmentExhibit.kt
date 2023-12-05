@@ -85,6 +85,8 @@ class FragmentExhibit: Fragment() {
         super.onStop()
 
         BotanicMediaPlayer.pauseAudio(binding)
+
+        if (window.isShowing) window.dismiss()
     }
 
     private fun setUpVolumeButton() {
@@ -153,12 +155,10 @@ class FragmentExhibit: Fragment() {
     }
 
     private fun checkAudioAction(file: File) {
-        binding.apply {
-            exhibitPlayLoader.visibility = View.VISIBLE
-            exhibitPlayIc.visibility = View.INVISIBLE
-            exhibitPlayIc.setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
-        }
-        ExhibitClient.getAudio(viewModel.getExhibitObject().audio, file, { initMediaPlayer(file) }) { mainActivity.runOnUiThread {
+        ExhibitClient.getAudio(viewModel.getExhibitObject().audio, file, {
+            initMediaPlayer(file)
+        }) {
+            mainActivity.runOnUiThread {
                 Toast.makeText(mainActivity, it, Toast.LENGTH_SHORT).show()
             }
         }
