@@ -107,61 +107,12 @@ class FragmentMap: Fragment() {
         mapView?.scalebar?.enabled = false
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS).apply {
             for (i in exhibitViewModel.getList()) {
-                val point = Point.fromLngLat(i.lng, i.lat)
-                val pointNumber = i.placeId.toString()
-                addPoint(point, i, pointNumber)
+                addPoint(i)
                 pointActivatedArray.add(false)
             }
         }
 
-        routeLineResources = RouteLineResources.Builder()
-            .routeLineColorResources(RouteLineColorResources.Builder()
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
-                .build())
-            .routeLineScaleExpression(buildScaleExpression(
-                listOf(
-                    RouteLineScaleValue(3f, 2f, 1f),
-                    RouteLineScaleValue(5f, 3f, 1f),
-                    RouteLineScaleValue(6f, 4f, 1f),
-                    RouteLineScaleValue(7f, 5f, 1f),
-                    RouteLineScaleValue(8f, 6f, 1f),
-                    RouteLineScaleValue(9f, 7f, 1f)
-                )
-            ))
-            .build()
-
-        options = MapboxRouteLineOptions.Builder(mainActivity)
-            .withVanishingRouteLineEnabled(true)
-            .withRouteLineResources(routeLineResources)
-            .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER)
-            .build()
-
-        routeLineApi = MapboxRouteLineApi(options)
-
-        routesObserver = RoutesObserver {
-            routeLineApi.setNavigationRoutes(it.navigationRoutes) { value ->
-                mapboxMap.getStyle()?.apply {
-                    MapboxRouteLineView(options).renderRouteDrawData(this, value)
-                }
-            }
-        }
+        setUpMBOptions()
 
         checkPermission()
         setLocationAction()
@@ -185,6 +136,9 @@ class FragmentMap: Fragment() {
                 center(point)
             }
             mapView?.camera?.flyTo(cameraSettings)
+
+            val viewAnnotation = annotationArray[exhibitViewModel.getList().indexOf(exhibitObject)]
+            setMapPointClicked(viewAnnotation, exhibitObject)
         }
     }
 
@@ -265,7 +219,9 @@ class FragmentMap: Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun addPoint(point: Point, pointObject: ExhibitObject, pointNumber: String) {
+    private fun addPoint(pointObject: ExhibitObject) {
+        val point = Point.fromLngLat(pointObject.lng, pointObject.lat)
+        val pointNumber = pointObject.placeId.toString()
         val viewAnnotation = viewAnnotationManager.addViewAnnotation(
             resId = R.layout.view_map,
             options = viewAnnotationOptions {
@@ -276,25 +232,35 @@ class FragmentMap: Fragment() {
 
         viewAnnotation.findViewById<TextView>(R.id.view_map_text).text = pointNumber
         viewAnnotation.setOnClickListener {
-            val cameraSettings = cameraOptions {
-                center(point)
-            }
-            mapView?.camera?.flyTo(cameraSettings)
+            setMapPointClicked(viewAnnotation, pointObject)
+        }
 
-            var currentPoint = Point.fromLngLat(0.0, 0.0)
+        ViewMapBinding.bind(viewAnnotation)
+    }
 
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+    @SuppressLint("MissingPermission")
+    private fun setMapPointClicked(viewAnnotation: View, pointObject: ExhibitObject) {
+        val point = Point.fromLngLat(pointObject.lng, pointObject.lat)
+        val cameraSettings = cameraOptions {
+            center(point)
+        }
+        mapView?.camera?.flyTo(cameraSettings)
 
-                DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation).show(parentFragmentManager, pointObject.placeName)
+        var currentPoint = Point.fromLngLat(0.0, 0.0)
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+
+            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 0).show(parentFragmentManager, pointObject.placeName)
+
+            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
+            viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }.addOnFailureListener {
+                DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 1).show(parentFragmentManager, pointObject.placeName)
 
                 viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
                 viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
-
-
-        }
-        ViewMapBinding.bind(viewAnnotation)
     }
 
     private fun buildScaleExpression(scalingValues: List<RouteLineScaleValue>) : Expression {
@@ -312,6 +278,67 @@ class FragmentMap: Fragment() {
         }
 
         return expressionBuilder.build()
+    }
+
+    private fun setRouteLineResources() {
+        routeLineResources = RouteLineResources.Builder()
+            .routeLineColorResources(RouteLineColorResources.Builder()
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red))
+                .build())
+            .routeLineScaleExpression(buildScaleExpression(
+                listOf(
+                    RouteLineScaleValue(3f, 2f, 1f),
+                    RouteLineScaleValue(5f, 3f, 1f),
+                    RouteLineScaleValue(6f, 4f, 1f),
+                    RouteLineScaleValue(7f, 5f, 1f),
+                    RouteLineScaleValue(8f, 6f, 1f),
+                    RouteLineScaleValue(9f, 7f, 1f)
+                )
+            ))
+            .build()
+    }
+
+    private fun setOptions() {
+        options = MapboxRouteLineOptions.Builder(mainActivity)
+            .withVanishingRouteLineEnabled(true)
+            .withRouteLineResources(routeLineResources)
+            .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER)
+            .build()
+    }
+
+    private fun setRoutesApi() {
+        routeLineApi = MapboxRouteLineApi(options)
+
+        routesObserver = RoutesObserver {
+            routeLineApi.setNavigationRoutes(it.navigationRoutes) { value ->
+                mapboxMap.getStyle()?.apply {
+                    MapboxRouteLineView(options).renderRouteDrawData(this, value)
+                }
+            }
+        }
+    }
+
+    private fun setUpMBOptions() {
+        setRouteLineResources()
+        setOptions()
+        setRoutesApi()
     }
 
     private fun requestLocationPermission() {

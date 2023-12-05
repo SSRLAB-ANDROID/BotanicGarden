@@ -104,7 +104,7 @@ class ExhibitViewModel: ViewModel() {
     }
 
     fun updateExhibit(window: PopupWindow, binding: FragmentExhibitBinding, tabSetup: (ArrayList<String>) -> Unit) {
-        setChosenItem(list[id.value!!])
+        exhibitObject = list[id.value!!]
 
         if (window.isShowing) window.dismiss()
 
@@ -126,13 +126,10 @@ class ExhibitViewModel: ViewModel() {
 
     //Current object
     private var exhibitObject = ExhibitObject()
-    fun setChosenItem(exhibitObject: ExhibitObject) { this.exhibitObject = exhibitObject }
     fun getExhibitObject() = exhibitObject
 
     //Current object ID
     val id = MutableLiveData<Int>()
-
-
 
     //List of objects
     private var list = arrayListOf<ExhibitObject>()
