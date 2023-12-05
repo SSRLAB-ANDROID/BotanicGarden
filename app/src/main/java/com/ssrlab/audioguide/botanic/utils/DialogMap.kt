@@ -48,7 +48,6 @@ class DialogMap(
     ): View {
 
         binding = ViewMapBottomSheetBinding.inflate(layoutInflater)
-
         binding.apply {
             bottomSheetImage.load(point.imagePreview) {
                 crossfade(true)
@@ -100,9 +99,7 @@ class DialogMap(
             override fun onFailure(
                 reasons: List<RouterFailure>,
                 routeOptions: RouteOptions
-            ) {
-                Toast.makeText(mainActivity, resources.getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
-            }
+            ) { Toast.makeText(mainActivity, resources.getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show() }
 
             @SuppressLint("MissingPermission")
             override fun onRoutesReady(

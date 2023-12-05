@@ -17,6 +17,7 @@
     <color name="secondary_blue">#ECF2F4</color>
     <color name="secondary_green">#436938</color>
 
-    <color name="map_red">#E05B5B</color>
+    <color name="map_red">#EA4141</color>
+    <color name="map_red_secondary">#CCFF7373</color>
 
 </resources>

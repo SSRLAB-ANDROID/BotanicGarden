@@ -211,7 +211,7 @@ class FragmentMap: Fragment() {
                     literal(0.6)
                 }
                 stop {
-                    literal(20.0)
+                    literal(18.0)
                     literal(1.0)
                 }
             }.toJson()
@@ -224,10 +224,7 @@ class FragmentMap: Fragment() {
         val pointNumber = pointObject.placeId.toString()
         val viewAnnotation = viewAnnotationManager.addViewAnnotation(
             resId = R.layout.view_map,
-            options = viewAnnotationOptions {
-                geometry(point)
-            }
-        )
+            options = viewAnnotationOptions { geometry(point) })
         annotationArray.add(viewAnnotation)
 
         viewAnnotation.findViewById<TextView>(R.id.view_map_text).text = pointNumber
@@ -251,6 +248,7 @@ class FragmentMap: Fragment() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
+
             DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 0).show(parentFragmentManager, pointObject.placeName)
 
             viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
@@ -261,6 +259,9 @@ class FragmentMap: Fragment() {
                 viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
                 viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             }
+        }
+
+        ViewMapBinding.bind(viewAnnotation)
     }
 
     private fun buildScaleExpression(scalingValues: List<RouteLineScaleValue>) : Expression {
