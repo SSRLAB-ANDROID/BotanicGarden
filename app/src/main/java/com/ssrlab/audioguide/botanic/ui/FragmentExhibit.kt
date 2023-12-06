@@ -146,6 +146,7 @@ class FragmentExhibit: Fragment() {
         else {
             if (viewModel.getExhibitObject().audio != "null") checkAudioAction(file)
             else {
+                binding.exhibitDurationHolder.visibility = View.GONE
                 binding.exhibitPlayLoader.visibility = View.INVISIBLE
                 binding.exhibitPlayIc.visibility = View.INVISIBLE
                 binding.exhibitVolumeIc.visibility = View.INVISIBLE
@@ -168,8 +169,9 @@ class FragmentExhibit: Fragment() {
         BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, file) {
             binding.apply {
                 scope.launch {
-                    delay(200)
+                    delay(100)
                     exhibitPlayLoader.visibility = View.INVISIBLE
+                    exhibitDurationHolder.visibility = View.VISIBLE
                     exhibitPlayIc.visibility = View.VISIBLE
                     exhibitVolumeIc.visibility = View.VISIBLE
                     exhibitSpeedIc.visibility = View.VISIBLE

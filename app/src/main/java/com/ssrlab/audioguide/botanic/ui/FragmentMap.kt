@@ -167,7 +167,6 @@ class FragmentMap: Fragment() {
                     binding.mapPositionIc.setImageResource(R.drawable.ic_location_enabled)
                     background = ContextCompat.getDrawable(mainActivity, R.drawable.background_green_button)
                     setOnClickListener {
-
                         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                                 if (location != null) {
                                     val cameraSettings = cameraOptions {
