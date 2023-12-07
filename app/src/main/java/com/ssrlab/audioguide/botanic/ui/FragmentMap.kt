@@ -248,12 +248,14 @@ class FragmentMap: Fragment() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
-            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 0).show(parentFragmentManager, pointObject.placeName)
+            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 0)
+                .show(parentFragmentManager, pointObject.placeName)
 
             viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
             viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
         }.addOnFailureListener {
-            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 1).show(parentFragmentManager, pointObject.placeName)
+            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 1)
+                .show(parentFragmentManager, pointObject.placeName)
 
             viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
             viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
