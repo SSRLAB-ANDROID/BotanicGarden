@@ -234,7 +234,6 @@ class FragmentMap: Fragment() {
         ViewMapBinding.bind(viewAnnotation)
     }
 
-    @SuppressLint("MissingPermission")
     private fun setMapPointClicked(viewAnnotation: View, pointObject: ExhibitObject) {
         val point = Point.fromLngLat(pointObject.lng, pointObject.lat)
         val cameraSettings = cameraOptions {
@@ -242,6 +241,17 @@ class FragmentMap: Fragment() {
             zoom(16.0)
         }
         mapView?.camera?.flyTo(cameraSettings)
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
 
         var currentPoint = Point.fromLngLat(0.0, 0.0)
 
