@@ -2,12 +2,16 @@ package com.ssrlab.audioguide.botanic.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -344,6 +348,30 @@ class FragmentMap: Fragment() {
                 }
             }
         }
+    }
+
+    private fun showLocationDisabledDialog() {
+        val context = requireContext()
+        val dialog = AlertDialog.Builder(context)
+            .setMessage("Чтобы отобразить карту, включите определение местоположения.")
+            .setPositiveButton("Да") { _, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+            .setNegativeButton("Нет") { dialog, _ ->
+                requireActivity().finish()
+                Toast.makeText(
+                    context,
+                    "Местоположение необходимо для работы приложения.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .create()
+
+        dialog.show()
     }
 
     private fun setUpMBOptions() {
