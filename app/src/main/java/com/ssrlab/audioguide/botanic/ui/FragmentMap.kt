@@ -3,8 +3,10 @@ package com.ssrlab.audioguide.botanic.ui
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -119,7 +121,7 @@ class FragmentMap: Fragment() {
         setUpMBOptions()
 
         checkPermission()
-        setLocationAction()
+        checkLocationEnabledAndProceed()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mainActivity)
 
@@ -374,6 +376,19 @@ class FragmentMap: Fragment() {
         dialog.show()
     }
 
+    private fun checkLocationEnabledAndProceed() {
+        val locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (isGpsEnabled && isNetworkEnabled) {
+            setLocationAction()
+        } else {
+            showLocationDisabledDialog()
+            requestLocationPermission()
+        }
+    }
     private fun setUpMBOptions() {
         setRouteLineResources()
         setOptions()
