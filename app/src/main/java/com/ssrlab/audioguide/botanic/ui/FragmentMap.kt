@@ -58,7 +58,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FragmentMap: Fragment() {
+class FragmentMap : Fragment() {
 
     private lateinit var binding: FragmentMapBinding
     private lateinit var mainActivity: MainActivity
@@ -104,7 +104,6 @@ class FragmentMap: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentMapBinding.inflate(layoutInflater)
 
         mapView = binding.map
@@ -119,8 +118,6 @@ class FragmentMap: Fragment() {
         }
 
         setUpMBOptions()
-
-        checkPermission()
         checkLocationEnabledAndProceed()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mainActivity)
@@ -164,36 +161,39 @@ class FragmentMap: Fragment() {
     private fun setLocationAction() {
         scope.launch {
             if (permissionConstant) {
-
-                mainActivity.runOnUiThread{
+                mainActivity.runOnUiThread {
                     setUpMapBox()
                 }
 
                 binding.mapPosition.apply {
                     binding.mapPositionIc.setImageResource(R.drawable.ic_location_enabled)
-                    background = ContextCompat.getDrawable(mainActivity, R.drawable.background_green_button)
+                    background =
+                        ContextCompat.getDrawable(mainActivity, R.drawable.background_green_button)
                     setOnClickListener {
                         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                                if (location != null) {
-                                    val cameraSettings = cameraOptions {
-                                        center(Point.fromLngLat(location.longitude, location.latitude))
-                                    }
-                                    mapView?.camera?.flyTo(cameraSettings)
+                            if (location != null) {
+                                val cameraSettings = cameraOptions {
+                                    center(Point.fromLngLat(location.longitude, location.latitude))
                                 }
+                                mapView?.camera?.flyTo(cameraSettings)
                             }
+                        }
                     }
                 }
             } else {
                 binding.mapPosition.apply {
                     binding.mapPositionIc.setImageResource(R.drawable.ic_location_disabled)
-                    background = ContextCompat.getDrawable(mainActivity, R.drawable.background_disabled_button)
+                    background = ContextCompat.getDrawable(
+                        mainActivity,
+                        R.drawable.background_disabled_button
+                    )
                     setOnClickListener { requestLocationPermission() }
                 }
             }
 
             delay(2000)
             checkPermission()
-            setLocationAction()
+//            setLocationAction()
         }
     }
 
@@ -206,8 +206,14 @@ class FragmentMap: Fragment() {
 
         mapView?.location?.locationPuck = LocationPuck2D(
             topImage = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_location_marker),
-            bearingImage = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_location_marker),
-            shadowImage = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_location_marker),
+            bearingImage = AppCompatResources.getDrawable(
+                mainActivity,
+                R.drawable.ic_location_marker
+            ),
+            shadowImage = AppCompatResources.getDrawable(
+                mainActivity,
+                R.drawable.ic_location_marker
+            ),
             scaleExpression = interpolate {
                 linear()
                 zoom()
@@ -240,6 +246,7 @@ class FragmentMap: Fragment() {
         ViewMapBinding.bind(viewAnnotation)
     }
 
+
     private fun setMapPointClicked(viewAnnotation: View, pointObject: ExhibitObject) {
         val point = Point.fromLngLat(pointObject.lng, pointObject.lat)
         val cameraSettings = cameraOptions {
@@ -262,25 +269,46 @@ class FragmentMap: Fragment() {
         var currentPoint = Point.fromLngLat(0.0, 0.0)
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+            if (location != null) currentPoint =
+                Point.fromLngLat(location.longitude, location.latitude)
 
-            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 0)
+            DialogMap(
+                mainActivity,
+                pointObject,
+                viewAnnotation,
+                annotationArray,
+                currentPoint,
+                mapboxNavigation,
+                0
+            )
                 .show(parentFragmentManager, pointObject.placeName)
 
-            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
-            viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
+            viewAnnotation.findViewById<TextView>(R.id.view_map_text)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
         }.addOnFailureListener {
-            DialogMap(mainActivity, pointObject, viewAnnotation, annotationArray, currentPoint, mapboxNavigation, 1)
+            DialogMap(
+                mainActivity,
+                pointObject,
+                viewAnnotation,
+                annotationArray,
+                currentPoint,
+                mapboxNavigation,
+                1
+            )
                 .show(parentFragmentManager, pointObject.placeName)
 
-            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background = ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
-            viewAnnotation.findViewById<TextView>(R.id.view_map_text).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            viewAnnotation.findViewById<ConstraintLayout>(R.id.view_map_parent).background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.background_map_point_active)
+            viewAnnotation.findViewById<TextView>(R.id.view_map_text)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
         }
 
         ViewMapBinding.bind(viewAnnotation)
     }
 
-    private fun buildScaleExpression(scalingValues: List<RouteLineScaleValue>) : Expression {
+    private fun buildScaleExpression(scalingValues: List<RouteLineScaleValue>): Expression {
         val expressionBuilder = Expression.ExpressionBuilder("interpolate")
         expressionBuilder.addArgument(Expression.exponential { literal(1.5) })
         expressionBuilder.zoom()
@@ -299,36 +327,130 @@ class FragmentMap: Fragment() {
 
     private fun setRouteLineResources() {
         routeLineResources = RouteLineResources.Builder()
-            .routeLineColorResources(RouteLineColorResources.Builder()
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .routeDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteCasingColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteClosureColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteHeavyCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteLowCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteModerateCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteRestrictedRoadColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteSevereCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteUnknownCongestionColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .alternativeRouteDefaultColor(ContextCompat.getColor(mainActivity, R.color.map_red_secondary))
-                .build())
-            .routeLineScaleExpression(buildScaleExpression(
-                listOf(
-                    RouteLineScaleValue(3f, 2f, 1f),
-                    RouteLineScaleValue(5f, 3f, 1f),
-                    RouteLineScaleValue(6f, 4f, 1f),
-                    RouteLineScaleValue(7f, 5f, 1f),
-                    RouteLineScaleValue(8f, 6f, 1f),
-                    RouteLineScaleValue(9f, 7f, 1f)
+            .routeLineColorResources(
+                RouteLineColorResources.Builder()
+                    .routeDefaultColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeCasingColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeClosureColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeHeavyCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeLowCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeModerateCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeSevereCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeUnknownCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .routeDefaultColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteCasingColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteClosureColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteHeavyCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteLowCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteModerateCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteRestrictedRoadColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteSevereCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteUnknownCongestionColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .alternativeRouteDefaultColor(
+                        ContextCompat.getColor(
+                            mainActivity,
+                            R.color.map_red_secondary
+                        )
+                    )
+                    .build()
+            )
+            .routeLineScaleExpression(
+                buildScaleExpression(
+                    listOf(
+                        RouteLineScaleValue(3f, 2f, 1f),
+                        RouteLineScaleValue(5f, 3f, 1f),
+                        RouteLineScaleValue(6f, 4f, 1f),
+                        RouteLineScaleValue(7f, 5f, 1f),
+                        RouteLineScaleValue(8f, 6f, 1f),
+                        RouteLineScaleValue(9f, 7f, 1f)
+                    )
                 )
-            ))
+            )
             .build()
     }
 
@@ -360,6 +482,7 @@ class FragmentMap: Fragment() {
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
                 requireActivity().finish()
+                checkLocationEnabledAndProceed()
             }
             .setNegativeButton("Нет") { dialog, _ ->
                 requireActivity().finish()
@@ -385,10 +508,11 @@ class FragmentMap: Fragment() {
         if (isGpsEnabled && isNetworkEnabled) {
             setLocationAction()
         } else {
-            showLocationDisabledDialog()
+//            showLocationDisabledDialog()
             requestLocationPermission()
         }
     }
+
     private fun setUpMBOptions() {
         setRouteLineResources()
         setOptions()
@@ -398,11 +522,18 @@ class FragmentMap: Fragment() {
     private fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
             mainActivity,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-            PackageManager.PERMISSION_GRANTED)
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            PackageManager.PERMISSION_GRANTED
+        )
     }
 
     private fun checkPermission() {
-        permissionConstant = ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        permissionConstant = ContextCompat.checkSelfPermission(
+            mainActivity,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 }
