@@ -2,6 +2,7 @@ package com.ssrlab.audioguide.botanic.utils
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.net.Uri
 import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
@@ -14,20 +15,24 @@ import java.io.File
 object BotanicMediaPlayer {
 
     private var mediaPlayer: MediaPlayer? = null
+    private var currentPosition = 0
     private val helpFunctions = HelpFunctions()
 
     private var speed: Float? = null
-    private var playerStatus = ""
+    private var playerStatus = "stopped"
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    fun initializeMediaPlayer(activity: MainActivity, binding: FragmentExhibitBinding, file: File, onSuccess: () -> Unit) {
-        pauseAudio(binding)
-        playerStatus = "play"
-        mediaPlayer = MediaPlayer()
+    private lateinit var uri: Uri
 
-        val uri = file.toUri()
+    fun initializeMediaPlayer(
+        activity: MainActivity,
+        binding: FragmentExhibitBinding,
+        file: File,
+        onSuccess: () -> Unit
+    ) {
+        mediaPlayer = MediaPlayer()
 
         activity.runOnUiThread {
             while (file.length() == 0L) {
@@ -45,7 +50,8 @@ object BotanicMediaPlayer {
         }
 
         try {
-            mediaPlayer!!.setDataSource(activity, uri)
+            mediaPlayer?.reset()
+            setDataSource(activity, file)
 
             if (speed != null) {
                 val playBackParams = PlaybackParams()
@@ -162,5 +168,10 @@ object BotanicMediaPlayer {
                 scope.launch { binding.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition) }
             }
         )
+    }
+
+    private fun setDataSource(activity: MainActivity, file: File) {
+        uri = file.toUri()
+        mediaPlayer!!.setDataSource(activity, uri)
     }
 }
