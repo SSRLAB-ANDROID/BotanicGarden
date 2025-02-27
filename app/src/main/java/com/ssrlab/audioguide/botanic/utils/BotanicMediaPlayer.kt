@@ -11,6 +11,7 @@ import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
 import kotlinx.coroutines.*
 import java.io.File
+import java.io.IOException
 
 object BotanicMediaPlayer {
 
@@ -58,22 +59,45 @@ object BotanicMediaPlayer {
                 playBackParams.speed = speed!!
                 mediaPlayer!!.playbackParams = playBackParams
             }
-            mediaPlayer!!.prepare()
+            mediaPlayer?.prepare()
 
-            mediaPlayer!!.setOnPreparedListener {
+            mediaPlayer?.setOnPreparedListener {
                 binding.apply {
                     exhibitDurationBar.max = mediaPlayer!!.duration
                     exhibitDurationBar.progress = 0
-                    exhibitDurationTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
-                    exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                    exhibitDurationTime.text =
+                        helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
+                    exhibitCurrentTime.text =
+                        helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
                 }
 
                 listenProgress(binding)
                 onSuccess()
             }
-            
-        } catch (e: Exception) {
-            activity.runOnUiThread { Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show() }
+
+            mediaPlayer?.setOnCompletionListener {
+                playerStatus = "stopped"
+                currentPosition = 0
+                binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
+                binding.exhibitDurationBar.progress = 0
+            }
+
+        } catch (e: IOException) {
+            activity.runOnUiThread {
+                Toast.makeText(
+                    activity,
+                    "Ошибка загрузки аудио",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: IllegalStateException) {
+            activity.runOnUiThread {
+                Toast.makeText(
+                    activity,
+                    "Ошибка плеера",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
