@@ -126,12 +126,10 @@ object BotanicMediaPlayer {
     }
 
     fun pauseAudio(binding: FragmentExhibitBinding) {
-        if (playerStatus == "pause") {
-            mediaPlayer!!.pause()
-            mediaPlayer!!.stop()
-            mediaPlayer!!.reset()
-
-            playerStatus = "play"
+        if (playerStatus == "playing") {
+            mediaPlayer?.pause()
+            currentPosition = mediaPlayer?.currentPosition ?: 0
+            playerStatus = "paused"
 
             binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
         }
@@ -152,7 +150,7 @@ object BotanicMediaPlayer {
     }
 
     private suspend fun initProgressListener(activity: MainActivity, binding: FragmentExhibitBinding) {
-        while (playerStatus == "pause") {
+        while (playerStatus == "playing") {
             scope.launch {
                 activity.runOnUiThread {
                     binding.apply {
