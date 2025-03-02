@@ -103,23 +103,30 @@ object BotanicMediaPlayer {
 
     fun playAudio(activity: MainActivity, binding: FragmentExhibitBinding) {
         scope.launch {
-            when (playerStatus) {
-                "pause" -> {
-                    mediaPlayer!!.pause()
-                    playerStatus = "play"
+            try {
+                when (playerStatus) {
+                    "pause" -> {
+                        mediaPlayer!!.pause()
+                        playerStatus = "play"
 
-                    activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
-                }
-                "play" -> {
-                    try {
+                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
+                    }
+
+                    "play" -> {
                         mediaPlayer!!.start()
                         playerStatus = "pause"
 
                         activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector) }
                         initProgressListener(activity, binding)
-                    } catch (e: Exception) {
-                        Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
                     }
+                }
+            } catch (e: IllegalStateException) {
+                activity.runOnUiThread {
+                    Toast.makeText(
+                        activity,
+                        "Невозможно воспроизвести аудио",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -149,13 +156,17 @@ object BotanicMediaPlayer {
         }
     }
 
-    private suspend fun initProgressListener(activity: MainActivity, binding: FragmentExhibitBinding) {
+    private suspend fun initProgressListener(
+        activity: MainActivity,
+        binding: FragmentExhibitBinding
+    ) {
         while (playerStatus == "playing") {
             scope.launch {
                 activity.runOnUiThread {
                     binding.apply {
                         if (mediaPlayer?.isPlaying == true) {
-                            exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                            exhibitCurrentTime.text =
+                                helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
                             exhibitDurationBar.progress = mediaPlayer!!.currentPosition
                         }
                     }
@@ -174,7 +185,8 @@ object BotanicMediaPlayer {
                             binding.apply {
                                 exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
                                 exhibitDurationBar.progress = 0
-                                exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                                exhibitCurrentTime.text =
+                                    helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
                             }
                         }
                     }
@@ -187,7 +199,10 @@ object BotanicMediaPlayer {
         binding.exhibitDurationBar.setOnSeekBarChangeListener(
             helpFunctions.createSeekBarProgressListener {
                 mediaPlayer!!.seekTo(it)
-                scope.launch { binding.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition) }
+                scope.launch {
+                    binding.exhibitCurrentTime.text =
+                        helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                }
             }
         )
     }
