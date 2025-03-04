@@ -105,11 +105,12 @@ object BotanicMediaPlayer {
         scope.launch {
             try {
                 when (playerStatus) {
-                    "pause" -> {
-                        mediaPlayer!!.pause()
-                        playerStatus = "play"
+                    "paused", "ready" -> {
+                        mediaPlayer?.start()
+                        playerStatus = "playing"
 
-                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
+                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector) }
+                        initProgressListener(activity, binding)
                     }
 
                     "play" -> {
