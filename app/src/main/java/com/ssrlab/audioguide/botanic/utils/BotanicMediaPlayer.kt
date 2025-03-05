@@ -113,12 +113,12 @@ object BotanicMediaPlayer {
                         initProgressListener(activity, binding)
                     }
 
-                    "play" -> {
-                        mediaPlayer!!.start()
-                        playerStatus = "pause"
+                    "playing" -> {
+                        mediaPlayer?.pause()
+                        currentPosition = mediaPlayer?.currentPosition ?: 0
+                        playerStatus = "paused"
 
-                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_pause_selector) }
-                        initProgressListener(activity, binding)
+                        activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
                     }
                 }
             } catch (e: IllegalStateException) {
