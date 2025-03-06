@@ -55,21 +55,21 @@ object BotanicMediaPlayer {
             setDataSource(activity, file)
 
             if (speed != null) {
-                val playBackParams = PlaybackParams()
-                playBackParams.speed = speed!!
+                val playBackParams = PlaybackParams().apply { this.speed = speed }
                 mediaPlayer!!.playbackParams = playBackParams
             }
-            mediaPlayer?.prepare()
+
+            mediaPlayer?.prepareAsync()
 
             mediaPlayer?.setOnPreparedListener {
-                binding.apply {
-                    exhibitDurationBar.max = mediaPlayer!!.duration
-                    exhibitDurationBar.progress = 0
-                    exhibitDurationTime.text =
+                binding.exhibitDurationBar.max = mediaPlayer!!.duration
+                binding.exhibitDurationBar.progress = 0
+                binding.exhibitDurationTime.text =
                         helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
-                    exhibitCurrentTime.text =
-                        helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                }
+                binding.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(0)
+
+                mediaPlayer!!.seekTo(currentPosition)
+                playerStatus = "ready"
 
                 listenProgress(binding)
                 onSuccess()
