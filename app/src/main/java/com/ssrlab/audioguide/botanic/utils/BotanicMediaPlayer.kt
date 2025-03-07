@@ -164,35 +164,16 @@ object BotanicMediaPlayer {
         while (playerStatus == "playing") {
             scope.launch {
                 activity.runOnUiThread {
-                    binding.apply {
-                        if (mediaPlayer?.isPlaying == true) {
-                            exhibitCurrentTime.text =
-                                helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
-                            exhibitDurationBar.progress = mediaPlayer!!.currentPosition
-                        }
-                    }
-                }
-            }
-
-            delay(10)
-
-            binding.exhibitDurationBar.apply {
-                if (progress == max) {
-                    playerStatus = "play"
-
-                    mediaPlayer?.seekTo(0)
-                    scope.launch {
-                        activity.runOnUiThread {
-                            binding.apply {
-                                exhibitPlayIc.setImageResource(R.drawable.ic_play_selector)
-                                exhibitDurationBar.progress = 0
-                                exhibitCurrentTime.text =
-                                    helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                    mediaPlayer?.let {
+                        if (it.isPlaying) {
+                            binding.exhibitCurrentTime.text =
+                                helpFunctions.convertToTimerMode(it.currentPosition)
+                            binding.exhibitDurationBar.progress = it.currentPosition
                             }
                         }
                     }
                 }
-            }
+            delay(500)
         }
     }
 
