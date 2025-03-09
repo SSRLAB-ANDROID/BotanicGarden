@@ -35,21 +35,6 @@ object BotanicMediaPlayer {
     ) {
         mediaPlayer = MediaPlayer()
 
-        activity.runOnUiThread {
-            while (file.length() == 0L) {
-
-                binding.apply {
-                    exhibitPlayLoader.visibility = View.VISIBLE
-                    exhibitPlayIc.visibility = View.INVISIBLE
-                }
-            }
-
-            binding.apply {
-                exhibitPlayLoader.visibility = View.INVISIBLE
-                exhibitPlayIc.visibility = View.VISIBLE
-            }
-        }
-
         try {
             mediaPlayer?.reset()
             setDataSource(activity, file)
@@ -180,10 +165,10 @@ object BotanicMediaPlayer {
     private fun listenProgress(binding: FragmentExhibitBinding) {
         binding.exhibitDurationBar.setOnSeekBarChangeListener(
             helpFunctions.createSeekBarProgressListener {
-                mediaPlayer!!.seekTo(it)
+                mediaPlayer?.seekTo(it)
+                currentPosition = it
                 scope.launch {
-                    binding.exhibitCurrentTime.text =
-                        helpFunctions.convertToTimerMode(mediaPlayer!!.currentPosition)
+                    binding.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(it)
                 }
             }
         )
