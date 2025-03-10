@@ -3,7 +3,6 @@ package com.ssrlab.audioguide.botanic.utils
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
-import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.ssrlab.audioguide.botanic.MainActivity
@@ -33,6 +32,7 @@ object BotanicMediaPlayer {
         file: File,
         onSuccess: () -> Unit
     ) {
+        releaseMediaPlayer(file)
         mediaPlayer = MediaPlayer()
 
         try {
@@ -134,9 +134,9 @@ object BotanicMediaPlayer {
         this.speed = speed
         mediaPlayer?.playbackParams = playBackParams
 
-        if (playerStatus == "play") {
+        if (playerStatus == "playing") {
             mediaPlayer!!.pause()
-            playerStatus = "play"
+            playerStatus = "playing"
 
             activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
         }
@@ -177,5 +177,14 @@ object BotanicMediaPlayer {
     private fun setDataSource(activity: MainActivity, file: File) {
         uri = file.toUri()
         mediaPlayer!!.setDataSource(activity, uri)
+    }
+
+    private fun releaseMediaPlayer(file: File) {
+        if (::uri.isInitialized) {
+            if (uri != file.toUri()) currentPosition = 0
+        }
+        mediaPlayer?.release()
+        mediaPlayer = null
+        playerStatus = "stopped"
     }
 }
