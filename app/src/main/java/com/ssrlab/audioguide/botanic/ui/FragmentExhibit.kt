@@ -137,13 +137,15 @@ class FragmentExhibit: Fragment() {
         }
     }
 
-    private fun checkAudioAvailability() {
+    private fun checkAudioAvailability(): Boolean {
         val file = File(mainActivity.getExternalFilesDir(null), "botanical_${viewModel.getExhibitObject().placeId}_${mainActivity.getApp().getLocale()}.mp3")
         if (file.exists()) {
             if (file.length() == 0L) checkAudioAction(file)
-            else initMediaPlayer(file)
-        }
         else {
+                initMediaPlayer(file)
+                return true
+            }
+        } else {
             if (viewModel.getExhibitObject().audio != "null") checkAudioAction(file)
             else {
                 binding.exhibitDurationHolder.visibility = View.GONE
@@ -153,6 +155,7 @@ class FragmentExhibit: Fragment() {
                 binding.exhibitSpeedIc.visibility = View.INVISIBLE
             }
         }
+        return false
     }
 
     private fun checkAudioAction(file: File) {
