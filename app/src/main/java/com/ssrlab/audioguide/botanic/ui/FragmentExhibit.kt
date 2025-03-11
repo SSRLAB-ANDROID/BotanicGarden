@@ -1,6 +1,7 @@
 package com.ssrlab.audioguide.botanic.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,8 @@ class FragmentExhibit: Fragment() {
 
     private lateinit var window: PopupWindow
 
+    private var isAudioAvailable = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,7 +58,7 @@ class FragmentExhibit: Fragment() {
             tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
             binding.exhibitPager.adapter = tabAdapter
 
-            checkAudioAvailability()
+            isAudioAvailable = checkAudioAvailability()
         }
 
         return binding.root
@@ -69,8 +72,9 @@ class FragmentExhibit: Fragment() {
             tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
             binding.exhibitPager.adapter = tabAdapter
 
-            checkAudioAvailability()
-        } }
+                isAudioAvailable = checkAudioAvailability()
+            }
+        }
 
         setUpVolumeButton()
         setUpSpeedList()
@@ -178,7 +182,11 @@ class FragmentExhibit: Fragment() {
                     exhibitPlayIc.visibility = View.VISIBLE
                     exhibitVolumeIc.visibility = View.VISIBLE
                     exhibitSpeedIc.visibility = View.VISIBLE
-                    exhibitPlayIc.setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
+                    exhibitPlayIc.setOnClickListener {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            BotanicMediaPlayer.playAudio(mainActivity, binding)
+                        }
+                    }
                 }
             }
         }
