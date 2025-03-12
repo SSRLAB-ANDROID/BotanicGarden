@@ -76,6 +76,20 @@ class FragmentExhibit: Fragment() {
             }
         }
 
+        if (isAudioAvailable) {
+            val file = File(
+                mainActivity.getExternalFilesDir(null),
+                "botanical_${viewModel.getExhibitObject().placeId}_${
+                    mainActivity.getApp().getLocale()
+                }.mp3"
+            )
+            if (file.exists()) {
+                if (file.length() == 0L) checkAudioAction(file)
+                else {
+                    initMediaPlayer(file)
+                }
+            }
+        }
         setUpVolumeButton()
         setUpSpeedList()
 
