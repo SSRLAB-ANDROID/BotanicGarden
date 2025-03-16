@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
-class FragmentExhibit: Fragment() {
+class FragmentExhibit : Fragment() {
 
     private lateinit var mainActivity: MainActivity
 
@@ -68,21 +68,16 @@ class FragmentExhibit: Fragment() {
         super.onResume()
 
         viewModel.setUpMoveActions(binding, this@FragmentExhibit)
-        viewModel.setUpOrderAction(binding, scope) { viewModel.updateExhibit(window, binding) {
-            tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
-            binding.exhibitPager.adapter = tabAdapter
+        viewModel.setUpOrderAction(binding, scope) {
+            viewModel.updateExhibit(window, binding) {
+                tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
+                binding.exhibitPager.adapter = tabAdapter
 
                 isAudioAvailable = checkAudioAvailability()
             }
         }
-
         if (isAudioAvailable) {
-            val file = File(
-                mainActivity.getExternalFilesDir(null),
-                "botanical_${viewModel.getExhibitObject().placeId}_${
-                    mainActivity.getApp().getLocale()
-                }.mp3"
-            )
+            val file = getAudio()
             if (file.exists()) {
                 if (file.length() == 0L) checkAudioAction(file)
                 else {
@@ -156,10 +151,10 @@ class FragmentExhibit: Fragment() {
     }
 
     private fun checkAudioAvailability(): Boolean {
-        val file = File(mainActivity.getExternalFilesDir(null), "botanical_${viewModel.getExhibitObject().placeId}_${mainActivity.getApp().getLocale()}.mp3")
+        val file = getAudio()
         if (file.exists()) {
             if (file.length() == 0L) checkAudioAction(file)
-        else {
+            else {
                 initMediaPlayer(file)
                 return true
             }
@@ -204,5 +199,14 @@ class FragmentExhibit: Fragment() {
                 }
             }
         }
+    }
+
+    private fun getAudio():File{
+        return File(
+            mainActivity.getExternalFilesDir(null),
+            "botanical_${viewModel.getExhibitObject().placeId}_${
+                mainActivity.getApp().getLocale()
+            }.mp3"
+        )
     }
 }
