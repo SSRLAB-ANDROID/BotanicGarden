@@ -1,5 +1,6 @@
 package com.ssrlab.audioguide.botanic.utils
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
@@ -29,6 +30,7 @@ object BotanicMediaPlayer {
     fun initializeMediaPlayer(
         activity: MainActivity,
         binding: FragmentExhibitBinding,
+        context: Context,
         file: File,
         onSuccess: () -> Unit
     ) {
@@ -71,7 +73,7 @@ object BotanicMediaPlayer {
             activity.runOnUiThread {
                 Toast.makeText(
                     activity,
-                    "Ошибка загрузки аудио",
+                    context.getString(R.string.audio_loading_error),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -79,14 +81,14 @@ object BotanicMediaPlayer {
             activity.runOnUiThread {
                 Toast.makeText(
                     activity,
-                    "Ошибка плеера",
+                    context.getString(R.string.player_error),
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
     }
 
-    fun playAudio(activity: MainActivity, binding: FragmentExhibitBinding) {
+    fun playAudio(activity: MainActivity, binding: FragmentExhibitBinding, context: Context) {
         scope.launch {
             try {
                 when (playerStatus) {
@@ -110,7 +112,7 @@ object BotanicMediaPlayer {
                 activity.runOnUiThread {
                     Toast.makeText(
                         activity,
-                        "Невозможно воспроизвести аудио",
+                        context.getString(R.string.impossible_to_extract_audio),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

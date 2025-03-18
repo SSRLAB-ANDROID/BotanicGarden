@@ -1,6 +1,7 @@
 package com.ssrlab.audioguide.botanic.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,6 +36,7 @@ class FragmentExhibit : Fragment() {
     private val scope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var window: PopupWindow
+    private val context: Context = requireContext()
 
     private var isAudioAvailable = false
 
@@ -182,7 +184,7 @@ class FragmentExhibit : Fragment() {
     }
 
     private fun initMediaPlayer(file: File) {
-        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, file) {
+        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, context, file) {
             binding.apply {
                 scope.launch {
                     delay(100)
@@ -193,7 +195,7 @@ class FragmentExhibit : Fragment() {
                     exhibitSpeedIc.visibility = View.VISIBLE
                     exhibitPlayIc.setOnClickListener {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            BotanicMediaPlayer.playAudio(mainActivity, binding)
+                            BotanicMediaPlayer.playAudio(mainActivity, binding, context)
                         }
                     }
                 }
@@ -201,7 +203,8 @@ class FragmentExhibit : Fragment() {
         }
     }
 
-    private fun getAudio():File{
+
+    private fun getAudio(): File {
         return File(
             mainActivity.getExternalFilesDir(null),
             "botanical_${viewModel.getExhibitObject().placeId}_${
