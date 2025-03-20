@@ -9,7 +9,11 @@ import androidx.core.net.toUri
 import com.ssrlab.audioguide.botanic.MainActivity
 import com.ssrlab.audioguide.botanic.R
 import com.ssrlab.audioguide.botanic.databinding.FragmentExhibitBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 
@@ -41,18 +45,28 @@ object BotanicMediaPlayer {
             mediaPlayer?.reset()
             setDataSource(activity, file)
 
-            if (speed != null) {
-                val playBackParams = PlaybackParams().apply { this.speed = speed }
-                mediaPlayer!!.playbackParams = playBackParams
-            }
-
             mediaPlayer?.prepareAsync()
 
             mediaPlayer?.setOnPreparedListener {
+                if (speed != null) {
+                    try {
+                        mediaPlayer?.playbackParams =
+                            PlaybackParams().apply { this.speed = speed }
+                    } catch (e: Exception) {
+                        activity.runOnUiThread {
+                            Toast.makeText(
+                                activity,
+                                context.getString(R.string.player_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
                 binding.exhibitDurationBar.max = mediaPlayer!!.duration
                 binding.exhibitDurationBar.progress = 0
                 binding.exhibitDurationTime.text =
-                        helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
+                    helpFunctions.convertToTimerMode(mediaPlayer!!.duration)
                 binding.exhibitCurrentTime.text = helpFunctions.convertToTimerMode(0)
 
                 mediaPlayer!!.seekTo(currentPosition)
@@ -149,10 +163,10 @@ object BotanicMediaPlayer {
                             binding.exhibitCurrentTime.text =
                                 helpFunctions.convertToTimerMode(it.currentPosition)
                             binding.exhibitDurationBar.progress = it.currentPosition
-                            }
                         }
                     }
                 }
+            }
             delay(500)
         }
     }
