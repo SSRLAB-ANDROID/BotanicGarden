@@ -147,7 +147,7 @@ class FragmentExhibit : Fragment() {
 
     private fun setSpeedAction(view: View, speed: Float) {
         view.setOnClickListener {
-            BotanicMediaPlayer.changeAudioSpeed(speed, mainActivity, binding)
+            BotanicMediaPlayer.changeAudioSpeed(speed)
             window.dismiss()
         }
     }

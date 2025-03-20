@@ -130,18 +130,11 @@ object BotanicMediaPlayer {
         }
     }
 
-    fun changeAudioSpeed(speed: Float, activity: MainActivity, binding: FragmentExhibitBinding) {
+    fun changeAudioSpeed(speed: Float) {
         val playBackParams = PlaybackParams()
         playBackParams.speed = speed
         this.speed = speed
         mediaPlayer?.playbackParams = playBackParams
-
-        if (playerStatus == "playing") {
-            mediaPlayer!!.pause()
-            playerStatus = "playing"
-
-            activity.runOnUiThread { binding.exhibitPlayIc.setImageResource(R.drawable.ic_play_selector) }
-        }
     }
 
     private suspend fun initProgressListener(
