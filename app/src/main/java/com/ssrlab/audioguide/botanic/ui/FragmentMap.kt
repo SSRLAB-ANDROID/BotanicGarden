@@ -98,7 +98,6 @@ class FragmentMap: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentMapBinding.inflate(layoutInflater)
 
         mapView = binding.map
@@ -158,7 +157,6 @@ class FragmentMap: Fragment() {
     private fun setLocationAction() {
         scope.launch {
             if (permissionConstant) {
-
                 mainActivity.runOnUiThread{
                     setUpMapBox()
                 }
@@ -168,13 +166,13 @@ class FragmentMap: Fragment() {
                     background = ContextCompat.getDrawable(mainActivity, R.drawable.background_green_button)
                     setOnClickListener {
                         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                                if (location != null) {
-                                    val cameraSettings = cameraOptions {
-                                        center(Point.fromLngLat(location.longitude, location.latitude))
-                                    }
-                                    mapView?.camera?.flyTo(cameraSettings)
+                            if (location != null) {
+                                val cameraSettings = cameraOptions {
+                                    center(Point.fromLngLat(location.longitude, location.latitude))
                                 }
+                                mapView?.camera?.flyTo(cameraSettings)
                             }
+                        }
                     }
                 }
             } else {
@@ -184,10 +182,7 @@ class FragmentMap: Fragment() {
                     setOnClickListener { requestLocationPermission() }
                 }
             }
-
-            delay(2000)
             checkPermission()
-            setLocationAction()
         }
     }
 
@@ -351,5 +346,6 @@ class FragmentMap: Fragment() {
 
     private fun checkPermission() {
         permissionConstant = ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (!permissionConstant) requestLocationPermission()
     }
 }
