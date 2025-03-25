@@ -25,6 +25,11 @@
     <string name="_1_25">1,25</string>
     <string name="_1_5">1,5</string>
 
+    <!-- Player -->
+    <string name="audio_loading_error">Ошибка загрузки аудио</string>
+    <string name="player_error">Ошибка плеера</string>
+    <string name="impossible_to_extract_audio">Невозможно воспроизвести аудио</string>
+
     <!--  Info  -->
     <string name="contacts_title">Контакты</string>
     <string name="address_title">Адрес:</string>

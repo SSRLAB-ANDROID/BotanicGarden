@@ -1,6 +1,7 @@
 package com.ssrlab.audioguide.botanic.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
-class FragmentExhibit: Fragment() {
+class FragmentExhibit : Fragment() {
 
     private lateinit var mainActivity: MainActivity
 
@@ -34,6 +35,8 @@ class FragmentExhibit: Fragment() {
     private val scope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var window: PopupWindow
+
+    private var isAudioAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +58,7 @@ class FragmentExhibit: Fragment() {
             tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
             binding.exhibitPager.adapter = tabAdapter
 
-            checkAudioAvailability()
+            isAudioAvailable = checkAudioAvailability()
         }
 
         return binding.root
@@ -65,13 +68,23 @@ class FragmentExhibit: Fragment() {
         super.onResume()
 
         viewModel.setUpMoveActions(binding, this@FragmentExhibit)
-        viewModel.setUpOrderAction(binding, scope) { viewModel.updateExhibit(window, binding) {
-            tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
-            binding.exhibitPager.adapter = tabAdapter
+        viewModel.setUpOrderAction(binding, scope) {
+            viewModel.updateExhibit(window, binding) {
+                tabAdapter = TabExhibitAdapter(activity as MainActivity, it, viewModel)
+                binding.exhibitPager.adapter = tabAdapter
 
-            checkAudioAvailability()
-        } }
-
+                isAudioAvailable = checkAudioAvailability()
+            }
+        }
+        if (isAudioAvailable) {
+            val file = getAudio()
+            if (file.exists()) {
+                if (file.length() == 0L) checkAudioAction(file)
+                else {
+                    initMediaPlayer(file)
+                }
+            }
+        }
         setUpVolumeButton()
         setUpSpeedList()
 
@@ -132,18 +145,20 @@ class FragmentExhibit: Fragment() {
 
     private fun setSpeedAction(view: View, speed: Float) {
         view.setOnClickListener {
-            BotanicMediaPlayer.changeAudioSpeed(speed, mainActivity, binding)
+            BotanicMediaPlayer.changeAudioSpeed(speed)
             window.dismiss()
         }
     }
 
-    private fun checkAudioAvailability() {
-        val file = File(mainActivity.getExternalFilesDir(null), "botanical_${viewModel.getExhibitObject().placeId}_${mainActivity.getApp().getLocale()}.mp3")
+    private fun checkAudioAvailability(): Boolean {
+        val file = getAudio()
         if (file.exists()) {
             if (file.length() == 0L) checkAudioAction(file)
-            else initMediaPlayer(file)
-        }
-        else {
+            else {
+                initMediaPlayer(file)
+                return true
+            }
+        } else {
             if (viewModel.getExhibitObject().audio != "null") checkAudioAction(file)
             else {
                 binding.exhibitDurationHolder.visibility = View.GONE
@@ -153,6 +168,7 @@ class FragmentExhibit: Fragment() {
                 binding.exhibitSpeedIc.visibility = View.INVISIBLE
             }
         }
+        return false
     }
 
     private fun checkAudioAction(file: File) {
@@ -166,7 +182,7 @@ class FragmentExhibit: Fragment() {
     }
 
     private fun initMediaPlayer(file: File) {
-        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, file) {
+        BotanicMediaPlayer.initializeMediaPlayer(mainActivity, binding, requireContext(), file) {
             binding.apply {
                 scope.launch {
                     delay(100)
@@ -175,9 +191,22 @@ class FragmentExhibit: Fragment() {
                     exhibitPlayIc.visibility = View.VISIBLE
                     exhibitVolumeIc.visibility = View.VISIBLE
                     exhibitSpeedIc.visibility = View.VISIBLE
-                    exhibitPlayIc.setOnClickListener { BotanicMediaPlayer.playAudio(mainActivity, binding) }
+                    exhibitPlayIc.setOnClickListener {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            BotanicMediaPlayer.playAudio(mainActivity, binding, requireContext())
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private fun getAudio(): File {
+        return File(
+            mainActivity.getExternalFilesDir(null),
+            "botanical_${viewModel.getExhibitObject().placeId}_${
+                mainActivity.getApp().getLocale()
+            }.mp3"
+        )
     }
 }

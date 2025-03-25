@@ -25,6 +25,11 @@
     <string name="_1_25">1,25</string>
     <string name="_1_5">1,5</string>
 
+    <!-- Player -->
+    <string name="audio_loading_error">Audio loading error</string>
+    <string name="player_error">Player error</string>
+    <string name="impossible_to_extract_audio">Impossible to extract audio</string>
+
     <!--  Info  -->
     <string name="contacts_title">Contacts</string>
     <string name="address_title">Address:</string>

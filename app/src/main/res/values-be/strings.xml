@@ -25,6 +25,11 @@
     <string name="_1_25">1,25</string>
     <string name="_1_5">1,5</string>
 
+    <!-- Player -->
+    <string name="audio_loading_error">Памылка загрузкі аўдыё</string>
+    <string name="player_error">Памылка плеера</string>
+    <string name="impossible_to_extract_audio">Немагчыма прайграць аўдыё</string>
+
     <!--  Info  -->
     <string name="contacts_title">Кантакты</string>
     <string name="address_title">Адрас:</string>
