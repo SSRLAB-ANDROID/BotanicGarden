@@ -196,4 +196,8 @@ object BotanicMediaPlayer {
         mediaPlayer = null
         playerStatus = "stopped"
     }
+
+    fun setVolume(leftVolume: Float, rightVolume: Float) {
+        mediaPlayer?.setVolume(leftVolume, rightVolume)
+    }
 }

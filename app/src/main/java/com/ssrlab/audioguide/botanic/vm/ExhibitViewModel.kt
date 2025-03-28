@@ -159,4 +159,8 @@ class ExhibitViewModel : ViewModel() {
     //Player volume
     private val _isVolumeOn = MutableLiveData(true)
     val isVolumeOn: LiveData<Boolean> get() = _isVolumeOn
+
+    fun setVolumeAvailability(isVolume: Boolean) {
+        _isVolumeOn.value = isVolume
+    }
 }
