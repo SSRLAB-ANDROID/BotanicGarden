@@ -50,8 +50,7 @@ object BotanicMediaPlayer {
             mediaPlayer?.setOnPreparedListener {
                 if (speed != null) {
                     try {
-                        mediaPlayer?.playbackParams =
-                            PlaybackParams().apply { this.speed = speed }
+                        speed?.let { mediaPlayer?.playbackParams?.speed = it }
                     } catch (e: Exception) {
                         activity.runOnUiThread {
                             Toast.makeText(
@@ -145,10 +144,19 @@ object BotanicMediaPlayer {
     }
 
     fun changeAudioSpeed(speed: Float) {
-        val playBackParams = PlaybackParams()
-        playBackParams.speed = speed
         this.speed = speed
-        mediaPlayer?.playbackParams = playBackParams
+
+        mediaPlayer?.let { player ->
+            val wasPlaying = player.isPlaying
+
+            val params = player.playbackParams
+            params.speed = speed
+            player.playbackParams = params
+
+            if (!wasPlaying) {
+                player.pause()
+            }
+        }
     }
 
     private suspend fun initProgressListener(
