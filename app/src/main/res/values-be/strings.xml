@@ -29,6 +29,7 @@
     <string name="audio_loading_error">Памылка загрузкі аўдыё</string>
     <string name="player_error">Памылка плеера</string>
     <string name="impossible_to_extract_audio">Немагчыма прайграць аўдыё</string>
+    <string name="volume_off">Гучнасць выключана</string>
 
     <!--  Info  -->
     <string name="contacts_title">Кантакты</string>

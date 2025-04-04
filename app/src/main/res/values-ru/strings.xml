@@ -29,6 +29,7 @@
     <string name="audio_loading_error">Ошибка загрузки аудио</string>
     <string name="player_error">Ошибка плеера</string>
     <string name="impossible_to_extract_audio">Невозможно воспроизвести аудио</string>
+    <string name="volume_off">Звук выключен</string>
 
     <!--  Info  -->
     <string name="contacts_title">Контакты</string>

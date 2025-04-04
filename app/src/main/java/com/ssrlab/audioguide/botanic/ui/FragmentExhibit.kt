@@ -112,8 +112,14 @@ class FragmentExhibit : Fragment() {
         }
 
         binding.exhibitVolumeIc.setOnClickListener {
-            if (viewModel.isVolumeOn.value!!) mainActivity.controlVolume(0)
-            else mainActivity.controlVolume(10)
+            val isVolumeOn = viewModel.isVolumeOn.value ?: true
+            if (isVolumeOn) {
+                BotanicMediaPlayer.setVolume(0.0f, 0.0f)
+                Toast.makeText(context, getString(R.string.volume_off), Toast.LENGTH_SHORT).show()
+            } else {
+                BotanicMediaPlayer.setVolume(1.0f, 1.0f)
+            }
+            viewModel.setVolumeAvailability(!isVolumeOn)
         }
     }
 

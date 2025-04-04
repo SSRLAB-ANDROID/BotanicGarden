@@ -1,6 +1,7 @@
 package com.ssrlab.audioguide.botanic.vm
 
 import android.widget.PopupWindow
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -14,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ExhibitViewModel: ViewModel() {
+class ExhibitViewModel : ViewModel() {
 
     //ExhibitHelper
     private val forwardObserver = MutableLiveData<Boolean>()
@@ -27,10 +28,12 @@ class ExhibitViewModel: ViewModel() {
                     backwardObserver.value = false
                     forwardObserver.value = true
                 }
+
                 list.size - 1 -> {
                     forwardObserver.value = false
                     backwardObserver.value = true
                 }
+
                 else -> {
                     forwardObserver.value = true
                     backwardObserver.value = true
@@ -65,7 +68,11 @@ class ExhibitViewModel: ViewModel() {
         }
     }
 
-    fun setUpOrderAction(binding: FragmentExhibitBinding, scope: CoroutineScope, onSuccess: () -> Unit) {
+    fun setUpOrderAction(
+        binding: FragmentExhibitBinding,
+        scope: CoroutineScope,
+        onSuccess: () -> Unit
+    ) {
         binding.apply {
             exhibitPreviousIc.setOnClickListener {
                 if (id.value != 0) {
@@ -93,7 +100,11 @@ class ExhibitViewModel: ViewModel() {
         }
     }
 
-    fun updateExhibit(window: PopupWindow, binding: FragmentExhibitBinding, tabSetup: (ArrayList<String>) -> Unit) {
+    fun updateExhibit(
+        window: PopupWindow,
+        binding: FragmentExhibitBinding,
+        tabSetup: (ArrayList<String>) -> Unit
+    ) {
         exhibitObject = list[id.value!!]
 
         if (window.isShowing) window.dismiss()
@@ -123,19 +134,33 @@ class ExhibitViewModel: ViewModel() {
 
     //List of objects
     private var list = arrayListOf<ExhibitObject>()
-    fun setList(list: ArrayList<ExhibitObject>) { this.list = list }
-    fun getList() = list
+    fun setList(list: ArrayList<ExhibitObject>) {
+        this.list = list
+    }
 
-    //Volume
-    var isVolumeOn = MutableLiveData<Boolean>()
+    fun getList() = list
 
     //Tab Link
     private var tabLink = ""
-    fun setTabLink(link: String) { tabLink = link }
+    fun setTabLink(link: String) {
+        tabLink = link
+    }
+
     fun getTabLink() = tabLink
 
     //MapHelper
     private var point = -1
-    fun setPoint(point: Int) { this.point = point }
+    fun setPoint(point: Int) {
+        this.point = point
+    }
+
     fun getPoint() = point
+
+    //Player volume
+    private val _isVolumeOn = MutableLiveData(true)
+    val isVolumeOn: LiveData<Boolean> get() = _isVolumeOn
+
+    fun setVolumeAvailability(isVolume: Boolean) {
+        _isVolumeOn.value = isVolume
+    }
 }
