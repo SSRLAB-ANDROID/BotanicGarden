@@ -22,8 +22,5 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "My Application"
+rootProject.name = "Botanical Garden"
 include ':app'
-
-
-//sk.eyJ1Ijoidm9ka2FrdW4iLCJhIjoiY2xsNHVwNXl1MDh0cTNkbWs1dnBvbzZkcCJ9.uLWPODcLpTGC4kWZHmXBSg

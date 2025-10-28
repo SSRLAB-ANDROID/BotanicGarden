@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragmentList"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentList"
+        android:name="com.dis.audioguide.botanic.ui.FragmentList"
         android:label="FragmentList" >
         <action
             android:id="@+id/action_fragmentList_to_fragmentExhibit"
@@ -14,6 +14,6 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentExhibit"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentExhibit"
+        android:name="com.dis.audioguide.botanic.ui.FragmentExhibit"
         android:label="FragmentExhibit" />
 </navigation>

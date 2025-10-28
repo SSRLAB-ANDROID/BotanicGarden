@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/fragmentInfo"
-        android:name="com.ssrlab.audioguide.botanic.ui.FragmentInfo"
+        android:name="com.dis.audioguide.botanic.ui.FragmentInfo"
         android:label="FragmentInfo" />
 </navigation>

@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace 'com.ssrlab.audioguide.botanic'
-    compileSdk 34
+    namespace 'com.dis.audioguide.botanic'
+    compileSdk 36
 
     bundle {
         language {
@@ -17,9 +17,9 @@ android {
     defaultConfig {
         viewBinding.enabled = true
 
-        applicationId "com.ssrlab.audioguide.botanic"
+        applicationId "com.dis.audioguide.botanic"
         minSdk 24
-        targetSdk 34
+        targetSdk 36
         versionCode 13
         versionName "1.8.2"
 
@@ -48,6 +48,12 @@ android {
     kotlinOptions {
         jvmTarget = '17'
         freeCompilerArgs = ['-Xjvm-default=compatibility']
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
     }
 }
 

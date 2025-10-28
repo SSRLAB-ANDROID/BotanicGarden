@@ -19,7 +19,7 @@
         tools:targetApi="33">
 
         <activity
-            android:name=".SplashActivity"
+            android:name="com.dis.audioguide.botanic.SplashActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             tools:ignore="LockedOrientationActivity">
@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.dis.audioguide.botanic.MainActivity"
             android:usesCleartextTraffic="true"
             android:screenOrientation="portrait"
             android:exported="true"
