@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import java.util.Locale
 import androidx.core.net.toUri
-import com.dis.audioguide.botanic.utils.MAPBOX_PUBLIC_TOKEN
 
 class MainActivity : AppCompatActivity() {
 

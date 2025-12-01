@@ -20,8 +20,8 @@ android {
         applicationId "com.dis.audioguide.botanic"
         minSdk 24
         targetSdk 36
-        versionCode 13
-        versionName "1.8.2"
+        versionCode 1
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
